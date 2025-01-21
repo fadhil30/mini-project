@@ -2,11 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const router = useRouter();
-  const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -17,49 +14,37 @@ export default function Header() {
     setIsOpen(false);
   };
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    router.push(`/search?q=${search}`);
-  };
-
   return (
-    <nav className="fixed z-10 w-full bg-[#232536] px-4 py-4 md:px-12">
+    <nav className="fixed z-10 w-full bg-[#232536] px-4 py-4 md:px-12 font-montserrat text-lg font-medium">
       <div className="flex h-12 items-center justify-between">
-        <div className="w-[120px]">
+        {/* Logo */}
+        <div className="relative w-[200px] h-[40px]">
           <Link href="/">
             <Image
-              src="/faithco-logo.svg"
+              src="/eventify-logo.svg"
               alt="Company Logo"
-              width={120}
-              height={50}
-              priority
+              fill
+              className="object-cover"
             />
           </Link>
         </div>
+
+        {/* Menu Toggle for Mobile */}
         <button className="text-2xl text-white md:hidden" onClick={toggleMenu}>
           {isOpen ? "✖" : "☰"}
         </button>
+
+        {/* Navigation Links */}
         <ul
           className={`${
             isOpen ? "block" : "hidden"
           } absolute left-0 top-16 w-full bg-[#232536] px-6 py-6 transition-all md:relative md:top-0 md:flex md:w-auto md:items-center md:gap-6 md:px-0 md:py-0`}
         >
-          <li>
-            <form onSubmit={handleSearch} className="flex">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="rounded-md bg-white px-4 py-1 text-black"
-              />
-            </form>
-          </li>
           <li className="border-b border-gray-300 pb-4 md:border-none md:pb-0">
             <Link
               href="/"
               onClick={handleLinkClick}
-              className="font-openSans transform text-base font-medium text-white transition duration-200 ease-in-out hover:scale-110 hover:underline"
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
             >
               Home
             </Link>
@@ -68,16 +53,16 @@ export default function Header() {
             <Link
               href="/blog"
               onClick={handleLinkClick}
-              className="transform text-base font-medium text-white transition duration-200 ease-in-out hover:scale-110 hover:underline"
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
             >
-              Blogs
+              Events
             </Link>
           </li>
           <li className="border-b border-gray-300 pb-4 md:border-none md:pb-0">
             <Link
               href="/about"
               onClick={handleLinkClick}
-              className="transform text-base font-medium text-white transition duration-200 ease-in-out hover:scale-110 hover:underline"
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
             >
               About
             </Link>
@@ -86,11 +71,36 @@ export default function Header() {
             <Link
               href="/contact"
               onClick={handleLinkClick}
-              className="transform text-base font-medium text-white transition duration-200 ease-in-out hover:scale-110 hover:underline"
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
             >
-              Contact Us
+              Contact
             </Link>
           </li>
+        </ul>
+
+        {/* Additional Links and Buttons */}
+        <ul className="flex flex-row justify-between gap-7 items-center">
+          <li className="border-b border-gray-300 pb-4 md:border-none md:pb-0">
+            <Link
+              href="/createEvent"
+              onClick={handleLinkClick}
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
+            >
+              Create Event
+            </Link>
+          </li>
+          <li className="border-b border-gray-300 pb-4 md:border-none md:pb-0">
+            <Link
+              href="/login"
+              onClick={handleLinkClick}
+              className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
+            >
+              Login
+            </Link>
+          </li>
+          <button className="bg-[#FFE047] px-5 py-1 rounded-lg hover:scale-105 transition duration-200">
+            Sign Up
+          </button>
         </ul>
       </div>
     </nav>
