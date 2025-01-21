@@ -1,22 +1,23 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import Link from "next/link";
+import React, { useState } from "react";
 
 const TicketBookingPage = () => {
   const [step, setStep] = useState(1);
   const [quantity, setQuantity] = useState(1);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: ''
+    fullName: "",
+    email: "",
+    phone: "",
   });
 
   // Simplified IDR formatting function
   const formatIDR = (number: number) => {
-    return `IDR ${number.toLocaleString('id-ID')}`;
+    return `IDR ${number.toLocaleString("id-ID")}`;
   };
 
-  const handleQuantityChange = (change : number) => {
+  const handleQuantityChange = (change: number) => {
     const newQuantity = Math.max(1, quantity + change);
     setQuantity(newQuantity);
   };
@@ -24,7 +25,7 @@ const TicketBookingPage = () => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -45,21 +46,21 @@ const TicketBookingPage = () => {
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Select Tickets</h2>
             </div>
-            
+
             <div className="border rounded-lg p-4">
               <div>
                 <div className="font-medium">Standard Ticket</div>
                 <div className="text-sm text-gray-500">{formatIDR(200000)}</div>
               </div>
               <div className="flex items-center space-x-4 mt-4">
-                <button 
+                <button
                   onClick={() => handleQuantityChange(-1)}
                   className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
                 >
                   -
                 </button>
                 <span>{quantity}</span>
-                <button 
+                <button
                   onClick={() => handleQuantityChange(1)}
                   className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
                 >
@@ -79,10 +80,12 @@ const TicketBookingPage = () => {
           {/* Attendee Details Section */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Attendee Details</h2>
-            
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Full Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   name="fullName"
@@ -144,11 +147,11 @@ const TicketBookingPage = () => {
               </div>
             </div>
 
-            <button 
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors"
-            >
-              Pay Now
-            </button>
+            <Link href="/payment">
+              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors">
+                Pay Now
+              </button>
+            </Link>
           </div>
         </div>
       </div>

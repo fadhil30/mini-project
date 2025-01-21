@@ -91,16 +91,18 @@ export default function Header() {
           </li>
           <li className="border-b border-gray-300 pb-4 md:border-none md:pb-0">
             <Link
-              href="/login"
+              href="/signin"
               onClick={handleLinkClick}
               className="relative text-white transition duration-200 ease-in-out hover:border-b-2 hover:border-[#FFE047]"
             >
               Login
             </Link>
           </li>
-          <button className="bg-[#FFE047] px-5 py-1 rounded-lg hover:scale-105 transition duration-200">
-            Sign Up
-          </button>
+          <Link href="/signup">
+            <button className="bg-[#FFE047] px-5 py-1 rounded-lg hover:scale-105 transition duration-200">
+              Sign Up
+            </button>
+          </Link>
         </ul>
       </div>
     </nav>

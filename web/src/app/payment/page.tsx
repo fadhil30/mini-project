@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import Link from "next/link";
+import React, { useState } from "react";
 
 const PaymentPage = () => {
-  const [selectedMethod, setSelectedMethod] = useState('');
+  const [selectedMethod, setSelectedMethod] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Mock order details - in real app, this would come from props or context
@@ -11,57 +12,57 @@ const PaymentPage = () => {
     ticketQty: 2,
     subtotal: 400000,
     tax: 24000,
-    total: 424000
+    total: 424000,
   };
 
   const formatIDR = (number: number) => {
-    return `IDR ${number.toLocaleString('id-ID')}`;
+    return `IDR ${number.toLocaleString("id-ID")}`;
   };
 
   const paymentMethods = [
     {
-      id: 'bca',
-      name: 'BCA Virtual Account',
-      icon: '🏦',
+      id: "bca",
+      name: "BCA Virtual Account",
+      icon: "🏦",
     },
     {
-      id: 'mandiri',
-      name: 'Mandiri Virtual Account',
-      icon: '🏦',
+      id: "mandiri",
+      name: "Mandiri Virtual Account",
+      icon: "🏦",
     },
     {
-      id: 'bni',
-      name: 'BNI Virtual Account',
-      icon: '🏦',
+      id: "bni",
+      name: "BNI Virtual Account",
+      icon: "🏦",
     },
     {
-      id: 'gopay',
-      name: 'GoPay',
-      icon: '📱',
+      id: "gopay",
+      name: "GoPay",
+      icon: "📱",
     },
     {
-      id: 'ovo',
-      name: 'OVO',
-      icon: '📱',
+      id: "ovo",
+      name: "OVO",
+      icon: "📱",
     },
     {
-      id: 'dana',
-      name: 'DANA',
-      icon: '📱',
-    }
+      id: "dana",
+      name: "DANA",
+      icon: "📱",
+    },
   ];
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
     if (!selectedMethod) {
-      alert('Please select a payment method');
+      alert("Please select a payment method");
       return;
     }
     setIsProcessing(true);
     // Simulate payment processing
     setTimeout(() => {
       setIsProcessing(false);
-      alert('Payment successful! Redirecting to confirmation page...');
+      alert("Payment successful! Redirecting to confirmation page...");
     }, 2000);
   };
 
@@ -69,7 +70,7 @@ const PaymentPage = () => {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-8">Payment Details</h1>
-        
+
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
           <div className="p-6">
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
@@ -101,8 +102,8 @@ const PaymentPage = () => {
                     key={method.id}
                     className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
                       selectedMethod === method.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-200'
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:border-blue-200"
                     }`}
                   >
                     <input
@@ -121,17 +122,21 @@ const PaymentPage = () => {
             </div>
 
             <div className="px-6 pb-6">
-              <button
-                type="submit"
-                disabled={isProcessing}
-                className={`w-full py-3 px-4 rounded-lg text-white font-medium ${
-                  isProcessing
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }`}
-              >
-                {isProcessing ? 'Processing...' : `Pay ${formatIDR(orderDetails.total)}`}
-              </button>
+              <Link href="/successPayment">
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className={`w-full py-3 px-4 rounded-lg text-white font-medium ${
+                    isProcessing
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  {isProcessing
+                    ? "Processing..."
+                    : `Pay ${formatIDR(orderDetails.total)}`}
+                </button>
+              </Link>
             </div>
           </form>
 
