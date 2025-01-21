@@ -17,7 +17,7 @@ export default function CategorySection() {
   ];
 
   return (
-    <section className="py-12 px-36">
+    <section className="py-12 px-36 font-montserrat">
       <h2 className="text-3xl font-bold text-left mb-8">Explore Categories</h2>
       <div className="flex flex-wrap justify-center gap-8">
         {categories.map((category, index) => (
