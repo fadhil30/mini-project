@@ -31,11 +31,20 @@ const EventForm = () => {
     "Other",
   ];
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked, files } = e.target as HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement;
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type, checked, files } = e.target as HTMLInputElement &
+      HTMLSelectElement &
+      HTMLTextAreaElement;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : type === "file" ? (files && files[0]) || null : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "file"
+          ? (files && files[0]) || null
+          : value,
     }));
   };
 
@@ -48,15 +57,21 @@ const EventForm = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Create a New Event</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          Create a New Event
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Basic Information</h3>
+            <h3 className="text-lg font-semibold text-gray-700">
+              Basic Information
+            </h3>
             {/* Event Title, Category, Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
               <input
                 type="text"
                 name="title"
@@ -69,7 +84,9 @@ const EventForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
               <select
                 name="category"
                 value={formData.category}
@@ -87,7 +104,9 @@ const EventForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
               <textarea
                 name="description"
                 value={formData.description}
@@ -101,9 +120,13 @@ const EventForm = () => {
 
           {/* Date and Time */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Date and Time</h3>
+            <h3 className="text-lg font-semibold text-gray-700">
+              Date and Time
+            </h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Date
+              </label>
               <input
                 type="date"
                 name="date"
@@ -114,7 +137,9 @@ const EventForm = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Time</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Time
+              </label>
               <input
                 type="time"
                 name="time"
@@ -128,9 +153,13 @@ const EventForm = () => {
 
           {/* Location and Capacity */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Location and Capacity</h3>
+            <h3 className="text-lg font-semibold text-gray-700">
+              Location and Capacity
+            </h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Location</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Location
+              </label>
               <input
                 type="text"
                 name="location"
@@ -154,7 +183,9 @@ const EventForm = () => {
               </label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Capacity</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Capacity
+              </label>
               <input
                 type="number"
                 name="capacity"
@@ -172,7 +203,9 @@ const EventForm = () => {
             <h3 className="text-lg font-semibold text-gray-700">Ticketing</h3>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Event Type</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Event Type
+              </label>
               <div className="flex items-center space-x-4 mt-2">
                 <label>
                   <input
@@ -202,7 +235,9 @@ const EventForm = () => {
             {formData.eventType === "ticketed" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Ticket Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Ticket Name
+                  </label>
                   <input
                     type="text"
                     name="ticketName"
@@ -215,7 +250,9 @@ const EventForm = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Ticket Price (IDR)</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Ticket Price (IDR)
+                  </label>
                   <input
                     type="number"
                     name="ticketPrice"
