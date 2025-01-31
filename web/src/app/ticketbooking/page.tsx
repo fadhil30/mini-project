@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const TicketBookingPage = () => {
@@ -11,8 +11,10 @@ const TicketBookingPage = () => {
     email: "",
     phone: "",
   });
+  const [pointsUsed, setPointsUsed] = useState<number>(0);
+  const availablePoints = 20000;
+  const router = useRouter();
 
-  // Simplified IDR formatting function
   const formatIDR = (number: number) => {
     return `IDR ${number.toLocaleString("id-ID")}`;
   };
@@ -33,13 +35,24 @@ const TicketBookingPage = () => {
     const ticketPrice = 200000;
     const subtotal = ticketPrice * quantity;
     const tax = subtotal * 0.06;
-    const total = subtotal + tax;
+    const total = subtotal + tax - pointsUsed;
     return { subtotal, tax, total };
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pt-60">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          // Logic to create order
+          const id = 10;
+
+          router.push(`/payment?id=${id}`);
+          console.log("Pay!");
+        }}
+        className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Select Tickets Section */}
           <div className="space-y-4 border-r border-gray-200 pr-6">
@@ -117,6 +130,26 @@ const TicketBookingPage = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Use Your Points (Available: {formatIDR(availablePoints)})
+                </label>
+                <input
+                  type="number"
+                  name="pointsUsed"
+                  value={pointsUsed}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10) || 0;
+                    if (value > availablePoints) {
+                      alert("You cannot use more points than you have.");
+                      return;
+                    }
+                    setPointsUsed(value);
+                  }}
+                  placeholder="Enter points to use"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
             </div>
           </div>
 
@@ -138,6 +171,10 @@ const TicketBookingPage = () => {
                 <span>{formatIDR(calculateTotals().subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
+                <span>Points Used:</span>
+                <span>-{formatIDR(pointsUsed)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span>Tax:</span>
                 <span>{formatIDR(calculateTotals().tax)}</span>
               </div>
@@ -147,14 +184,15 @@ const TicketBookingPage = () => {
               </div>
             </div>
 
-            <Link href="/payment">
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors">
-                Pay Now
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors"
+            >
+              Pay Now
+            </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

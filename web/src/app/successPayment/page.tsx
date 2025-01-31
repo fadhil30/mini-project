@@ -118,11 +118,11 @@ const PaymentSuccessPage = () => {
             <button className="bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border transition-colors">
               View Order Details
             </button>
-            <Link href="/">
-              <button className="bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border transition-colors">
+            
+            <Link href="/homePage" className="bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border transition-colors">
                 Back to Home
-              </button>
             </Link>
+
           </div>
         </div>
 

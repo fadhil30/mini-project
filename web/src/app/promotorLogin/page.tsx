@@ -29,9 +29,9 @@ export default function LoginPage() {
       <div className="grid grid-cols-2 bg-white shadow-lg rounded-lg w-3/4 overflow-hidden">
         {/* Bagian Kiri */}
         <div className="bg-indigo-900 text-white flex flex-col justify-center items-start px-10">
-          <h1 className="text-4xl font-bold mb-4">Discover tailored events</h1>
+          <h1 className="text-4xl font-bold mb-4">Make your own event with us</h1>
           <p className="text-lg mb-6">
-            Sign in for personalized recommendations today!
+            Join your team event here!
           </p>
         </div>
 
@@ -105,19 +105,9 @@ export default function LoginPage() {
 
           {/* Footer */}
           <div className="mt-4 text-center text-sm text-gray-500">
-            Don’t have an account?{' '}
-            <a href="/signup" className="text-indigo-600 hover:underline">
-              Sign up
-            </a>
-          </div>
-
-          {/* Tombol Sign in for Promotor */}
-          <div className="mt-4 text-center">
-            <a
-              href="/promotorLogin" // Ganti dengan rute yang sesuai
-              className="text-sm text-indigo-600 hover:underline"
-            >
-              Sign in for Promotor
+            Don’t have an promoter account?{' '}
+            <a href="/promotorSignup" className="text-indigo-600 hover:underline">
+              Sign up as promoter here
             </a>
           </div>
         </div>

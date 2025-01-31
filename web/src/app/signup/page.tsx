@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    referralNumber: '',
+    fullName: "",
+    email: "",
+    password: "",
+    referralNumber: "",
   });
 
   const togglePasswordVisibility = () => {
@@ -24,23 +26,23 @@ export default function SignUpPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
+      const response = await fetch("/api/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        alert('Account created successfully!');
+        alert("Account created successfully!");
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
       }
     } catch (error) {
-      console.error('Registration error:', error);
-      alert('An unexpected error occurred. Please try again.');
+      console.error("Registration error:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -112,7 +114,7 @@ export default function SignUpPage() {
               </label>
               <div className="relative">
                 <input
-                  type={passwordVisible ? 'text' : 'password'}
+                  type={passwordVisible ? "text" : "password"}
                   id="password"
                   placeholder="Enter your password"
                   value={formData.password}
@@ -125,16 +127,13 @@ export default function SignUpPage() {
                   onClick={togglePasswordVisibility}
                   className="absolute inset-y-0 right-3 flex items-center text-gray-500"
                 >
-                  {passwordVisible ? 'Hide' : 'Show'}
+                  {passwordVisible ? "Hide" : "Show"}
                 </button>
               </div>
             </div>
 
             <div className="mb-6">
-              <label
-                className="block text-gray-700 mb-1"
-                htmlFor="referralNumber"
-              >
+              <label className="block text-gray-700 mb-1" htmlFor="referralNumber">
                 Referral Number (Optional)
               </label>
               <input
@@ -153,12 +152,21 @@ export default function SignUpPage() {
             >
               Create Account
             </button>
+
+            {/* New Promoter Sign-Up Button */}
+            <button
+              type="button"
+              className="w-full mt-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              onClick={() => router.push("/promotorSignup")}
+            >
+              Sign Up for Promoter
+            </button>
           </form>
 
           {/* Footer */}
           <div className="mt-4 text-center text-sm text-gray-500">
-            Already have an account?{' '}
-            <a href="/login" className="text-indigo-600 hover:underline">
+            Already have an account?{" "}
+            <a href="/signin" className="text-indigo-600 hover:underline">
               Log in
             </a>
           </div>
