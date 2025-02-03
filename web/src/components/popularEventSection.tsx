@@ -82,21 +82,12 @@ export default function PopularEvent() {
               <span className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 text-xs rounded">
                 {event.category}
               </span>
-              <button className="absolute top-2 right-2 bg-white p-1 rounded-full shadow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.25 20.25L6.75 16.5m0 0l-4.5-4.5m4.5 4.5L20.25 3.75M6.75 16.5l10.5-10.5"
-                  />
-                </svg>
+              <button className="absolute top-2 right-2 bg-white p-1 rounded-full shadow w-10 h-12">
+                <Image
+                  src="/favorite-off-icon.svg"
+                  alt="favorite button"
+                  fill
+                />
               </button>
             </div>
             <div className="p-4">
@@ -116,7 +107,6 @@ export default function PopularEvent() {
           </div>
         ))}
       </div>
-      {/* See More Button */}
       <div className="flex justify-center mt-8">
         <button className="px-6 py-2 border rounded-lg hover:bg-gray-100 focus:outline-none">
           See More
