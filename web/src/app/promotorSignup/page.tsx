@@ -71,7 +71,12 @@ export default function SignUpPromoterPage() {
           <div className="mb-4">
             <label className="block text-gray-700 mb-1" htmlFor="email">
               Email Address
-            </label>
+            </label> 
+
+
+
+
+             
             <input
               type="email"
               id="email"
