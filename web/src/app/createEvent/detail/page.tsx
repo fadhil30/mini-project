@@ -29,14 +29,12 @@ const EventReviewPage = () => {
         <span className="text-sm font-bold text-gray-800">Review</span>
       </div>
 
-      {/* Event Details Section */}
       <div className="max-w-5xl mx-auto py-8 px-12 space-y-8">
-        {/* Event Title and Image */}
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-gray-700">Event Title</h3>
           <div className="relative w-full h-48 bg-gray-200">
             <Image
-              src="/event-placeholder.png" // Replace with actual image URL
+              src="/event-placeholder.png"
               alt="Event Image"
               fill
               className="object-cover"
