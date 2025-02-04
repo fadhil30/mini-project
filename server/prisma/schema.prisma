@@ -12,3 +12,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  USER
+  PROMOTOR
+}
+
+enum Category {
+  Food
+  Art
+  Music
+}
+
+model User {
+  id             Int            @id @default(autoincrement())
+  fullName       String
+  email          String         @unique
+  emailConfirmed Boolean        @default(false)
+  role           Role           @default(USER)
+  password       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  ConfirmToken   ConfirmToken[]
+}
+
+model ConfirmToken {
+  id          Int      @id @default(autoincrement())
+  token       String
+  expiredDate DateTime
+  used        Boolean  @default(false)
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+}
