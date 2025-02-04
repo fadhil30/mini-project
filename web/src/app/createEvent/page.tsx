@@ -1,5 +1,7 @@
 "use client";
-
+import Footer from "@/components/footer";
+import Header from "@/components/header";
+import Image from "next/image";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
 const EventForm = () => {
@@ -55,12 +57,22 @@ const EventForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+    <section className="min-h-screen">
+      <Header />
+      <div className="flex flex-row pl-11 pt-28 justify-start items-center gap-12 w-full">
+        <div className="relative w-7 h-5">
+          <Image
+            src="/back-button.svg"
+            alt="Back Button"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 flex-grow">
           Create a New Event
         </h2>
-
+      </div>
+      <div className="mx-auto  pb-20 px-36">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
@@ -269,24 +281,42 @@ const EventForm = () => {
             )}
           </div>
 
+          {/* Upload Image Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Upload Image
+            </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Feature Image
+              </label>
+              <input
+                type="file"
+                name="image"
+                accept="image/jpeg, image/png, image/gif"
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Feature Image must be at least 1170 pixels wide by 504 pixels
+                high. Valid file formats: JPG, GIF, PNG.
+              </p>
+            </div>
+          </div>
+
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <button
-              type="button"
-              className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Save Draft
-            </button>
-            <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-6 py-2 bg-[#2B293D] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Create Event
             </button>
           </div>
         </form>
       </div>
-    </div>
+      <Footer />
+    </section>
   );
 };
 

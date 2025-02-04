@@ -2,11 +2,9 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer>
-      {/* Links Section */}
+    <footer className="mt-8">
       <div className="bg-[#232536] text-white py-10 px-6">
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Company Info */}
           <div>
             <h4 className="font-bold mb-4">Company Info</h4>
             <ul className="space-y-2 text-sm">
@@ -18,7 +16,6 @@ export default function Footer() {
               <li>Privacy Policy</li>
             </ul>
           </div>
-          {/* Help */}
           <div>
             <h4 className="font-bold mb-4">Help</h4>
             <ul className="space-y-2 text-sm">
@@ -28,7 +25,6 @@ export default function Footer() {
               <li>Ticket Purchase Terms & Conditions</li>
             </ul>
           </div>
-          {/* Categories */}
           <div>
             <h4 className="font-bold mb-4">Categories</h4>
             <ul className="space-y-2 text-sm">
@@ -42,7 +38,6 @@ export default function Footer() {
               <li>Workshops, Conferences & Classes</li>
             </ul>
           </div>
-          {/* Follow Us */}
           <div>
             <h4 className="font-bold mb-4">Follow Us</h4>
             <ul className="space-y-2 text-sm">
@@ -52,7 +47,6 @@ export default function Footer() {
               <li>Youtube</li>
             </ul>
           </div>
-          {/* Download the App */}
           <div>
             <h4 className="font-bold mb-4">Download The App</h4>
             <ul className="space-y-4">
@@ -85,8 +79,6 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-
-        {/* Footer Bottom */}
         <div className="text-center text-sm mt-10 border-t border-gray-700 pt-6">
           &copy;2023 Eventify. All rights reserved.
         </div>
