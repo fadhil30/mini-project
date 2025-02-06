@@ -12,6 +12,7 @@ export default function SignUpPromoterPage() {
     password: "",
     phoneNumber: "",
     companyName: "",
+    role: "PROMOTER",
   });
 
   const togglePasswordVisibility = () => {
@@ -27,7 +28,7 @@ export default function SignUpPromoterPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/register-promoter", {
+      const response = await fetch("http://localhost:8000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,6 +38,7 @@ export default function SignUpPromoterPage() {
 
       if (response.ok) {
         alert("Promoter account created successfully!");
+        router.push("/"); //Redirect setelah berhasil dan masuk ke homepage
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
@@ -126,6 +128,20 @@ export default function SignUpPromoterPage() {
               required
             />
           </div>
+
+          <div className="mb-4">
+              <label className="block text-gray-700 mb-1" htmlFor="role">
+              </label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
+                required
+              >
+                <option value="customer">CUSTOMER</option>
+              </select>
+            </div>
 
           <div className="mb-6">
             <label className="block text-gray-700 mb-1" htmlFor="companyName">

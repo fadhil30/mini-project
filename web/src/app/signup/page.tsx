@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -11,13 +12,14 @@ export default function SignUpPage() {
     email: "",
     password: "",
     referralNumber: "",
+    role: "CUSTOMER", // Default role
   });
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
@@ -26,7 +28,7 @@ export default function SignUpPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("http://localhost:8000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,6 +38,7 @@ export default function SignUpPage() {
 
       if (response.ok) {
         alert("Account created successfully!");
+        router.push("/"); // Redirect setelah berhasil dan masuk ke homepage
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
@@ -52,9 +55,7 @@ export default function SignUpPage() {
         {/* Left Section */}
         <div className="bg-[#2B293B] text-white flex flex-col justify-center items-start px-10">
           <h1 className="text-4xl font-bold mb-4">Discover tailored events</h1>
-          <p className="text-lg mb-6">
-            Sign up for personalized recommendations today!
-          </p>
+          <p className="text-lg mb-6">Sign up for personalized recommendations today!</p>
         </div>
 
         {/* Right Section */}
@@ -132,6 +133,20 @@ export default function SignUpPage() {
               </div>
             </div>
 
+            <div className="mb-4">
+              <label className="block text-gray-700 mb-1" htmlFor="role">
+              </label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
+                required
+              >
+                <option value="customer">CUSTOMER</option>
+              </select>
+            </div>
+
             <div className="mb-6">
               <label className="block text-gray-700 mb-1" htmlFor="referralNumber">
                 Referral Number (Optional)
@@ -154,21 +169,20 @@ export default function SignUpPage() {
             </button>
 
             {/* New Promoter Sign-Up Button */}
-            <button
-              type="button"
-              className="w-full mt-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-              onClick={() => router.push("/promotorSignup")}
+            <Link
+              href="/promotorSignup"
+              className="block text-center mt-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
             >
               Sign Up for Promoter
-            </button>
+            </Link>
           </form>
 
           {/* Footer */}
           <div className="mt-4 text-center text-sm text-gray-500">
             Already have an account?{" "}
-            <a href="/signin" className="text-indigo-600 hover:underline">
+            <Link href="/signin" className="text-indigo-600 hover:underline">
               Log in
-            </a>
+            </Link>
           </div>
         </div>
       </div>

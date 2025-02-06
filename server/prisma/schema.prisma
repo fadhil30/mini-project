@@ -13,36 +13,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-enum Category {
-  Food
-  Art
-  Music
+enum Role {
+  CUSTOMER
+  PROMOTER
 }
 
 model User {
-  id             Int            @id @default(autoincrement())
-  fullName       String
-  email          String         @unique
-  emailConfirmed Boolean        @default(false)
-  role           Role           @default(CUSTOMER)
-  password       String
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  ConfirmToken   ConfirmToken[]
+  id              Int      @id @default(autoincrement())
+  fullName        String
+  email           String   @unique
+  password        String
+  role            Role     // Menggunakan enum Role
+  referralCode    String   @unique
+  emailConfirmed Boolean @default(false)
+  points          Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  referrerId      Int?  // Referral code dari user lain
+  Referrer  User? @relation("UserReferrer",fields: [referrerId], references: [id])
+  ReferreredUsers User[] @relation("UserReferrer")
+  events          Event[]  // Untuk promoter
+  tickets         Ticket[] // Untuk customer
+  redeemedPoints  RedeemedPoint[]
+  ConfirmToken ConfirmToken[] 
 }
 
 model ConfirmToken {
-  id          Int      @id @default(autoincrement())
-  token       String
+  id Int @id @default(autoincrement())
+  token String
   expiredDate DateTime
-  used        Boolean  @default(false)
-  userId      Int
-  User        User     @relation(fields: [userId], references: [id])
+  used Boolean @default(false)
+  createdAt DateTime @default(now())
+  userId Int
+
+ User User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
-  enum Role {
-  CUSTOMER
-  PROMOTOR
+model Event {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String
+  date            DateTime
+  price           Float
+  organizerId     Int
+  organizer       User     @relation(fields: [organizerId], references: [id])
+  tickets         Ticket[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
+model Ticket {
+  id              Int      @id @default(autoincrement())
+  eventId         Int
+  event           Event    @relation(fields: [eventId], references: [id])
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  pricePaid       Float
+  discountUsed    Float    @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model RedeemedPoint {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  pointsUsed      Int
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime // Tanggal kedaluwarsa poin
+}
