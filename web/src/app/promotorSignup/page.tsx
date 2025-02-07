@@ -10,16 +10,14 @@ export default function SignUpPromoterPage() {
     fullName: "",
     email: "",
     password: "",
-    phoneNumber: "",
-    companyName: "",
-    role: "PROMOTER",
+    role: "PROMOTER",//deafault role
   });
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
@@ -28,7 +26,7 @@ export default function SignUpPromoterPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/register", {
+      const response = await fetch("http://localhost:8000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +50,9 @@ export default function SignUpPromoterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg w-3/4 p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up as Promoter</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Sign Up as Promoter
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -73,12 +73,8 @@ export default function SignUpPromoterPage() {
           <div className="mb-4">
             <label className="block text-gray-700 mb-1" htmlFor="email">
               Email Address
-            </label> 
+            </label>
 
-
-
-
-             
             <input
               type="email"
               id="email"
@@ -114,47 +110,18 @@ export default function SignUpPromoterPage() {
             </div>
           </div>
 
+          
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1" htmlFor="phoneNumber">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              id="phoneNumber"
-              placeholder="Enter your phone number"
-              value={formData.phoneNumber}
+            <label className="block text-gray-700 mb-1" htmlFor="role"></label>
+            <select
+              id="role"
+              value={formData.role}
               onChange={handleInputChange}
               className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
               required
-            />
-          </div>
-
-          <div className="mb-4">
-              <label className="block text-gray-700 mb-1" htmlFor="role">
-              </label>
-              <select
-                id="role"
-                value={formData.role}
-                onChange={handleInputChange}
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
-                required
-              >
-                <option value="customer">CUSTOMER</option>
-              </select>
-            </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-1" htmlFor="companyName">
-              Company Name (Optional)
-            </label>
-            <input
-              type="text"
-              id="companyName"
-              placeholder="Enter your company name"
-              value={formData.companyName}
-              onChange={handleInputChange}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
-            />
+            >
+              <option value="customer">PROMOTER</option>
+            </select>
           </div>
 
           <button
