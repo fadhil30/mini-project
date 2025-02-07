@@ -55,7 +55,24 @@ model ConfirmToken {
 
 }
 
-
+model Event {
+  id                 Int       @id @default(autoincrement())
+  title              String
+  image              String
+  description        String
+  location           String
+  eventStartDate     DateTime
+  eventStartTime     DateTime
+  ticketPrice        Int
+  ticketAvailability Int
+  categoryId         Int
+  host               String
+  eventType          EventType
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  Category           Category  @relation(fields: [categoryId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+}
 model Ticket {
   id              Int      @id @default(autoincrement())
   eventId         Int
@@ -74,4 +91,11 @@ model RedeemedPoint {
   pointsUsed      Int
   createdAt       DateTime @default(now())
   expiresAt       DateTime // Tanggal kedaluwarsa poin
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String
+  image String
+  Event Event[]
 }
