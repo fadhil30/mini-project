@@ -1,60 +1,73 @@
 "use client";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import { Categories } from "@/types/category";
 import Image from "next/image";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 
 const EventForm = () => {
   const [formData, setFormData] = useState({
     title: "",
-    category: "",
+    categoryId: "",
     description: "",
-    date: "",
-    time: "",
+    eventStartDate: "",
+    eventStartTime: "",
     location: "",
-    capacity: "",
-    price: "",
-    isOnline: false,
-    tags: "",
-    image: null,
-    eventType: "ticketed", // New state for ticketing
-    ticketName: "",
-    ticketPrice: "",
+    ticketAvailability: "",
+    ticketPrice: "0",
+    image: null as File | null,
+    eventType: "TICKETED",
   });
+  const [categories, setCategories] = useState<Categories>();
 
-  const categories = [
-    "Conference",
-    "Workshop",
-    "Seminar",
-    "Concert",
-    "Exhibition",
-    "Sports",
-    "Entertainment",
-    "Other",
-  ];
+  useEffect(() => {
+    async function getCategories() {
+      try {
+        const response = await fetch("http://localhost:8000/api/v1/categories");
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type, checked, files } = e.target as HTMLInputElement &
-      HTMLSelectElement &
-      HTMLTextAreaElement;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : type === "file"
-          ? (files && files[0]) || null
-          : value,
-    }));
-  };
+        const data: Categories = await response.json();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+        setCategories(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getCategories();
+  }, []);
+
+  async function handleSubmit() {
     console.log(formData);
-    // Add submission logic (e.g., send data to a server)
-  };
+    try {
+      const formEvent = new FormData();
+      formEvent.append("title", formData.title);
+      formEvent.append("categoryId", formData.categoryId);
+      formEvent.append("description", formData.description);
+      // formEvent.append("date", formData.eventStartDate);
+      // formEvent.append("time", formData.eventStartTime);
+      formEvent.append("location", formData.location);
+      formEvent.append("ticketAvailability", formData.ticketAvailability);
+      formEvent.append("ticketPrice", formData.ticketPrice);
+      if (formData.image) {
+        formEvent.append("image", formData.image);
+      }
+      formEvent.append("eventType", formData.eventType);
+      formEvent.append(
+        "eventSchedule",
+        new Date(
+          `${formData.eventStartDate}T${formData.eventStartTime}`
+        ).toISOString()
+      );
+      formEvent.append("host", "Ahmad");
+
+      await fetch("http://localhost:8000/api/v1/events", {
+        method: "POST",
+        body: formEvent,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <section className="min-h-screen">
@@ -73,7 +86,25 @@ const EventForm = () => {
         </h2>
       </div>
       <div className="mx-auto  pb-20 px-36">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+            // setFormData({
+            //   title: "",
+            //   categoryId: "",
+            //   description: "",
+            //   eventStartDate: "",
+            //   eventStartTime: "",
+            //   location: "",
+            //   ticketAvailability: "",
+            //   ticketPrice: "0",
+            //   image: null as File | null,
+            //   eventType: "ticketed",
+            // });
+          }}
+          className="space-y-6"
+        >
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-700">
@@ -86,9 +117,11 @@ const EventForm = () => {
               </label>
               <input
                 type="text"
-                name="title"
+                id="title"
                 value={formData.title}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Event Title"
                 required
@@ -100,16 +133,23 @@ const EventForm = () => {
                 Category
               </label>
               <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
+                id="category"
+                value={formData.categoryId}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    categoryId: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                <option value="">Select Category</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                <option value="" disabled>
+                  Select Category
+                </option>
+                {categories?.data.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
                   </option>
                 ))}
               </select>
@@ -120,9 +160,14 @@ const EventForm = () => {
                 Description
               </label>
               <textarea
-                name="description"
+                id="description"
                 value={formData.description}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Event Description"
                 required
@@ -141,9 +186,14 @@ const EventForm = () => {
               </label>
               <input
                 type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
+                id="date"
+                value={formData.eventStartDate}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    eventStartDate: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -154,55 +204,59 @@ const EventForm = () => {
               </label>
               <input
                 type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
+                id="time"
+                value={formData.eventStartTime}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    eventStartTime: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
           </div>
 
-          {/* Location and Capacity */}
+          {/* Location and Ticket Availability */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-700">
-              Location and Capacity
+              Location and Ticket Availability
             </h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="location"
+              >
                 Location
               </label>
               <input
                 type="text"
-                name="location"
+                id="location"
                 value={formData.location}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, location: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Event Location"
                 required
               />
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                <input
-                  type="checkbox"
-                  name="isOnline"
-                  checked={formData.isOnline}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                Online Event
-              </label>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Capacity
+                Ticket Availability
               </label>
               <input
                 type="number"
-                name="capacity"
-                value={formData.capacity}
-                onChange={handleChange}
+                id="ticketAvailability"
+                value={formData.ticketAvailability}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    ticketAvailability: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Event Capacity"
                 required
@@ -222,10 +276,15 @@ const EventForm = () => {
                 <label>
                   <input
                     type="radio"
+                    value="TICKETED"
+                    checked={formData.eventType === "TICKETED"}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        eventType: e.target.value,
+                      }))
+                    }
                     name="eventType"
-                    value="ticketed"
-                    checked={formData.eventType === "ticketed"}
-                    onChange={handleChange}
                     className="mr-2"
                   />
                   Ticketed Event
@@ -233,34 +292,24 @@ const EventForm = () => {
                 <label>
                   <input
                     type="radio"
-                    name="eventType"
-                    value="free"
-                    checked={formData.eventType === "free"}
-                    onChange={handleChange}
+                    value="FREE"
+                    checked={formData.eventType === "FREE"}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        eventType: e.target.value,
+                      }))
+                    }
                     className="mr-2"
+                    name="eventType"
                   />
                   Free Event
                 </label>
               </div>
             </div>
 
-            {formData.eventType === "ticketed" && (
+            {formData.eventType === "TICKETED" && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Ticket Name
-                  </label>
-                  <input
-                    type="text"
-                    name="ticketName"
-                    value={formData.ticketName}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., General Admission"
-                    required
-                  />
-                </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Ticket Price (IDR)
@@ -269,7 +318,12 @@ const EventForm = () => {
                     type="number"
                     name="ticketPrice"
                     value={formData.ticketPrice}
-                    onChange={handleChange}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        ticketPrice: e.target.value,
+                      }))
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     min="0"
                     step="1000"
@@ -292,9 +346,12 @@ const EventForm = () => {
               </label>
               <input
                 type="file"
-                name="image"
-                accept="image/jpeg, image/png, image/gif"
-                onChange={handleChange}
+                id="image"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  setFormData((prev) => ({ ...prev, image: file }));
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-sm text-gray-500 mt-2">

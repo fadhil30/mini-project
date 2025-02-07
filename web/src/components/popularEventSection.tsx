@@ -1,73 +1,27 @@
 import Image from "next/image";
 
-export default function PopularEvent() {
-  const events = [
-    {
-      date: "NOV 25 - 26",
-      title: "Lakeside Camping at Rancabali",
-      category: "Travel & Adventure",
-      image: "/lakeside-camping-event.png",
-      location: "Rancabali, Bandung, Indonesia",
-      time: "8:30 AM - 7:30 PM",
-      price: "Rp 1.400.000",
-      interested: "14 interested",
-    },
-    {
-      date: "DEC 02",
-      title: "Sound Of Christmas 2023",
-      category: "Cultural & Arts",
-      image: "/sound-of-christmas-event.png",
-      location: "Balai Kartini, Jakarta, Indonesia",
-      time: "6:30 PM - 9:30 PM",
-      price: "Rp 499.000",
-      interested: "16 interested",
-    },
-    {
-      date: "DEC 02",
-      title: "Meet the Royal College of Art in Indonesia 2023",
-      category: "Educational & Business",
-      image: "/royal-college-event.png",
-      location: "Hotel Mulia, Jakarta, Indonesia",
-      time: "10 AM - 5 PM",
-      price: "Rp 200.000",
-    },
-    {
-      date: "DEC 03",
-      title: "Global Engineering Education Expo 2023",
-      category: "Educational & Business",
-      image: "/engineering-expo-event.png",
-      location: "The Ritz-Carlton, Jakarta, Indonesia",
-      time: "10 AM - 2 PM",
-      price: "Rp 150.000",
-      interested: "48 interested",
-    },
-    {
-      date: "DEC 08",
-      title: "Cricket & Business Meetup",
-      category: "Sports & Fitness",
-      image: "/cricket-meetup-event.png",
-      location: "Gelora Bung Karno, Jakarta, Indonesia",
-      time: "6:30 PM - 9:30 PM",
-      price: "Rp 399.000",
-    },
-    {
-      date: "FEB 14",
-      title: "Valentine's Day Sail on a Yacht in Bali",
-      category: "Travel & Adventure",
-      image: "/valentine-sail-event.png",
-      location: "Sanur, Bali, Indonesia",
-      time: "7 AM - 8 PM",
-      price: "Rp 2.999.000",
-      interested: "160 interested",
-    },
-  ];
+export default async function PopularEvent() {
+  const response = await fetch("http://localhost:8000/api/v1/events");
+  const events = await response.json();
+
+  const formatEventDate = (isoString) => {
+    const date = new Date(isoString);
+    return date.toISOString().split("T")[0]; // Hanya mengambil tanggal (YYYY-MM-DD)
+  };
+
+  const formatEventTime = (isoString) => {
+    const date = new Date(isoString);
+    // Mengubah waktu ke GMT+7
+    date.setHours(date.getHours() + 7); // Menambahkan 7 jam untuk GMT+7
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); // Menampilkan jam dalam format HH:MM
+  };
 
   return (
     <section className="py-12 px-36">
       <h2 className="text-3xl font-bold text-left mb-8">Popular Events</h2>
       {/* Event Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {events.map((event, index) => (
+        {events.data.map((event, index) => (
           <div
             key={index}
             className="border rounded-lg overflow-hidden shadow-md bg-white"
@@ -80,7 +34,7 @@ export default function PopularEvent() {
                 className="object-cover"
               />
               <span className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 text-xs rounded">
-                {event.category}
+                {event.Category.name}
               </span>
               <button className="absolute top-2 right-2 bg-white p-1 rounded-full shadow w-10 h-12">
                 <Image
@@ -91,10 +45,14 @@ export default function PopularEvent() {
               </button>
             </div>
             <div className="p-4">
-              <span className="text-sm text-gray-500">{event.date}</span>
+              <span className="text-sm text-gray-500">
+                {formatEventDate(event.eventSchedule)} {/* Format tanggal */}
+              </span>
               <h3 className="text-lg font-bold mt-2">{event.title}</h3>
               <p className="text-sm text-gray-600 mt-1">{event.location}</p>
-              <p className="text-sm text-gray-600">{event.time}</p>
+              <p className="text-sm text-gray-600">
+                {formatEventTime(event.eventSchedule)}
+              </p>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm font-bold">{event.price}</span>
                 {event.interested && (

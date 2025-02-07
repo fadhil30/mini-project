@@ -18,6 +18,11 @@ enum Role {
   PROMOTOR
 }
 
+enum EventType {
+  TICKETED
+  FREE
+}
+
 model User {
   id             Int            @id @default(autoincrement())
   fullName       String
@@ -40,19 +45,20 @@ model ConfirmToken {
 }
 
 model Event {
-  id             Int      @id @default(autoincrement())
-  title          String
-  image          String
-  description    String
-  location       String
-  eventStartDate DateTime
-  eventStartTime DateTime
-  eventEndTime   DateTime
-  ticketPrice    String
-  categoryId     Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  Category       Category @relation(fields: [categoryId], references: [id])
+  id                 Int       @id @default(autoincrement())
+  title              String
+  image              String
+  description        String
+  location           String
+  eventSchedule      DateTime
+  ticketPrice        Int
+  ticketAvailability Int
+  categoryId         Int
+  host               String
+  eventType          EventType
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  Category           Category  @relation(fields: [categoryId], references: [id])
 }
 
 model Category {
