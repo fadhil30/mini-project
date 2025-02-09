@@ -8,5 +8,5 @@ export const registerSchema = z.object({
     .min(3, "Name must be 3 character or more")
     .email("Invalid email format"),
   password: z.string().min(6, "Password must be 6 character or more"),
-  role: z.enum(["USER", "PROMOTOR"]),
+  role: z.enum(["COSTUMER", "PROMOTER"]),
 });

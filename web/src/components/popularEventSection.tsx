@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default async function PopularEvent() {
-  const response = await fetch("http://localhost:8000/api/v1/events");
+  const response = await fetch("http://localhost:8000/events");
   const events = await response.json();
 
   const formatEventDate = (isoString) => {

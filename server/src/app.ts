@@ -1,14 +1,12 @@
 import "dotenv/config";
 import express from "express";
-import eventRouter from "./routers/event-router";
-import categoryRouter from "./routers/category-router";
+import eventRouter from "./router/event-router";
+import categoryRouter from "./router/category-router";
 import authRoutes from "./router/authRoutes";
 import ticketRoutes from "./router/ticketRoutes";
 import userRoutes from "./router/userRoutes";
 import dotenv from "dotenv";
 import cors from "cors";
-
-
 
 const app = express();
 
@@ -24,8 +22,8 @@ dotenv.config();
 app.use("/auth", authRoutes);
 app.use("/customer", ticketRoutes);
 app.use("/user", userRoutes);
-
-
+app.use("/category", categoryRouter);
+app.use("/events",eventRouter)
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
