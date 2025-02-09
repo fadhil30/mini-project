@@ -1,11 +1,13 @@
-import { PrismaClient, Role } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaClient, Role } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function seedCategories() {
+  console.log("🌱 Seeding categories...");
 
+  // Clear existing categories
   await prisma.event.deleteMany();
   await prisma.category.deleteMany();
 
@@ -57,6 +59,13 @@ async function main() {
     },
   });
 
+  console.log("✅ Categories seeded!");
+  return { CategoryEnt, CategoryTech }; // Return categories needed for events
+}
+
+async function seedEvents(categories: { CategoryEnt: any; CategoryTech: any }) {
+  console.log("🌱 Seeding events...");
+
   await prisma.event.createMany({
     data: [
       {
@@ -64,10 +73,10 @@ async function main() {
         image:
           "https://res.cloudinary.com/dwtjculny/image/upload/v1738738374/muneeb-syed-4_M8uIfPEZw-unsplash_aprvfh.jpg",
         description:
-          "Get ready for an unforgettable weekend of live performances, electrifying music, and a vibrant festival atmosphere at The Grand Music Festival! This event brings together top local and international artists, with performances spanning multiple genres including pop, rock, EDM, and jazz. Whether you’re here to dance, sing along, or simply soak in the electric vibe, there's something for everyone.\nWith stunning stage setups, state-of-the-art sound systems, and light shows that will leave you in awe, this festival is one you do not want to miss. Experience the thrill of being part of a crowd of music lovers, and create memories that will last a lifetime.",
+          "Get ready for an unforgettable weekend of live performances, electrifying music, and a vibrant festival atmosphere at The Grand Music Festival! This event brings together top local and international artists, with performances spanning multiple genres including pop, rock, EDM, and jazz. Whether you're here to dance, sing along, or simply soak in the electric vibe, there's something for everyone.\nWith stunning stage setups, state-of-the-art sound systems, and light shows that will leave you in awe, this festival is one you do not want to miss. Experience the thrill of being part of a crowd of music lovers, and create memories that will last a lifetime.",
         location: "Ancol Beach, North Jakarta, Indonesia",
-        eventSchedule: "2024-06-15T16:00:00.000Z",
-        categoryId: CategoryEnt.id,
+        eventSchedule: new Date("2024-06-15T16:00:00.000Z"),
+        categoryId: categories.CategoryEnt.id,
         host: "Live Nation Indonesia",
         eventType: "TICKETED",
         ticketPrice: 450000,
@@ -80,8 +89,8 @@ async function main() {
         description:
           "Join the Tech Innovators Summit, a premier event bringing together the brightest minds in technology, innovation, and entrepreneurship. This summit features inspiring keynotes, interactive workshops, and networking opportunities with industry leaders and tech startups. Discover the latest trends in AI, blockchain, robotics, and the Internet of Things (IoT) while gaining insights from top thought leaders.\nWhether you're a developer, entrepreneur, or technology enthusiast, this event will leave you with invaluable knowledge and connections. Get ready to be inspired and see what the future of technology holds!",
         location: "Grand Hyatt Jakarta, Indonesia",
-        eventSchedule: "2024-07-20T08:00:00.000Z",
-        categoryId: CategoryTech.id,
+        eventSchedule: new Date("2024-07-20T08:00:00.000Z"),
+        categoryId: categories.CategoryTech.id,
         host: "Tech Innovators Summit",
         eventType: "FREE",
         ticketPrice: 0,
@@ -89,14 +98,12 @@ async function main() {
       },
     ],
   });
+
+  console.log("✅ Events seeded!");
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (error) => {
-    console.error(error);
+async function seedUsers() {
+  console.log("🌱 Seeding users...");
 
   const users = [
     {
@@ -143,22 +150,44 @@ main()
           email: user.email,
           password: user.password,
           role: user.role,
-          referralCode: user.referralCode, // Tambahkan referralCode
+          referralCode: user.referralCode,
           createdAt: user.createdAt,
         },
       });
-      console.log(`✅ Inserted user: ${user.email} | Referral Code: ${user.referralCode}`);
+      console.log(
+        `✅ Inserted user: ${user.email} | Referral Code: ${user.referralCode}`
+      );
     } catch (error) {
       console.error(`❌ Error inserting ${user.email}:`, error);
     }
   }
+
+  console.log("✅ Users seeded!");
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+async function main() {
+  try {
+    // Clear necessary tables first
+    await prisma.ticket.deleteMany();
+    await prisma.event.deleteMany();
+    await prisma.category.deleteMany();
+    await prisma.user.deleteMany();
+
+    // Seed in correct order
+    const categories = await seedCategories();
+    await seedEvents(categories);
+    await seedUsers();
+
+    console.log("✅ Database seeding completed!");
+  } catch (error) {
+    console.error("❌ Error during seeding:", error);
+    throw error;
+  } finally {
     await prisma.$disconnect();
-  });
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
