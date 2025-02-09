@@ -1,6 +1,6 @@
 import express from "express";
 import { CreateEvent, GetEvents } from "../controller/event-controller";
-import { upload } from "../middlewares/upload-middleware";
+import { upload } from "../middleware/upload-middleware";
 
 const router = express.Router();
 

@@ -14,7 +14,7 @@ export default function CreateCategory() {
       formData.append("name", formCategories?.name);
       formData.append("image", formCategories?.image);
 
-      await fetch("http://localhost:8000/api/v1/categories", {
+      await fetch("http://localhost:8000/category", {
         method: "POST",
         body: formData,
       });
