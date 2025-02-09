@@ -22,8 +22,10 @@ dotenv.config();
 app.use("/auth", authRoutes);
 app.use("/customer", ticketRoutes);
 app.use("/user", userRoutes);
-app.use("/events", eventRouter);
-app.use("/categories", categoryRouter);
+
+app.use("/category", categoryRouter);
+app.use("/events",eventRouter)
+
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

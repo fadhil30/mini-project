@@ -7,11 +7,13 @@ const prisma = new PrismaClient();
 async function seedCategories() {
   console.log("🌱 Seeding categories...");
 
+
   // Clear existing categories
   await prisma.event.deleteMany();
   await prisma.category.deleteMany();
 
-  const CategoryEnt = await prisma.category.create({
+
+  const categoryEnt = await prisma.category.create({
     data: {
       name: "Entertainment",
       image:
@@ -19,31 +21,7 @@ async function seedCategories() {
     },
   });
 
-  const CategoryEdu = await prisma.category.create({
-    data: {
-      name: "Education & Business",
-      image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738661950/blog/images/fmacmq5xz3aubxzkktuh.jpg",
-    },
-  });
-
-  const CategoryArt = await prisma.category.create({
-    data: {
-      name: "Art & Culture",
-      image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662035/blog/images/nyxn2xvj7e9powsxta43.jpg",
-    },
-  });
-
-  const CategorySport = await prisma.category.create({
-    data: {
-      name: "Sports & Fitness",
-      image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662166/blog/images/nw0islqf0jfvjj5on6hb.jpg",
-    },
-  });
-
-  const CategoryTech = await prisma.category.create({
+  const categoryTech = await prisma.category.create({
     data: {
       name: "Technology & Innovation",
       image:
@@ -51,13 +29,43 @@ async function seedCategories() {
     },
   });
 
-  const CategoryTravel = await prisma.category.create({
-    data: {
-      name: "Travel & Adventure",
+  console.log("✅ Categories seeded!");
+  return { categoryEnt, categoryTech };
+}
+
+async function seedEvents(categories: { categoryEnt: any; categoryTech: any }) {
+  console.log("🌱 Seeding events...");
+  console.log("✅ Categories for events:", categories);
+
+  const eventsData = [
+    {
+      title: "The Grand Music Festival",
       image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662238/blog/images/ccpupzzyy2lgbrw91rca.jpg",
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738738374/muneeb-syed-4_M8uIfPEZw-unsplash_aprvfh.jpg",
+      description: "An amazing music festival!",
+      location: "Ancol Beach, North Jakarta, Indonesia",
+      eventSchedule: new Date("2024-06-15T16:00:00.000Z"),
+      category: { connect: { id: categories.categoryEnt.id } }, // Perbaikan di sini
+      host: "Live Nation Indonesia",
+      eventType: "TICKETED",
+      ticketPrice: 450000,
+      ticketAvailability: 1000,
     },
-  });
+    {
+      title: "Tech Innovators Summit",
+      image:
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738739066/teemu-paananen-bzdhc5b3Bxs-unsplash_sfgcxv.jpg",
+      description: "The biggest tech summit of the year!",
+      location: "Grand Hyatt Jakarta, Indonesia",
+      eventSchedule: new Date("2024-07-20T08:00:00.000Z"),
+      category: { connect: { id: categories.categoryTech.id } }, // Perbaikan di sini
+      host: "Tech Innovators Summit",
+      eventType: "FREE",
+      ticketPrice: 0,
+      ticketAvailability: 1500,
+    },
+  ];
+
 
   console.log("✅ Categories seeded!");
   return { CategoryEnt, CategoryTech }; // Return categories needed for events
@@ -98,6 +106,16 @@ async function seedEvents(categories: { CategoryEnt: any; CategoryTech: any }) {
       },
     ],
   });
+
+  for (const event of eventsData) {
+    try {
+      await prisma.event.create({ data: event });
+      console.log(`✅ Event created: ${event.title}`);
+    } catch (error) {
+      console.error(`❌ Error creating event ${event.title}:`, error);
+    }
+  }
+
 
   console.log("✅ Events seeded!");
 }
@@ -140,11 +158,12 @@ async function seedUsers() {
     },
   ];
 
-  for (const user of users) {
-    try {
-      await prisma.user.upsert({
+  await Promise.all(
+    users.map((user) =>
+      prisma.user.upsert({
         where: { email: user.email },
         update: {},
+
         create: {
           fullName: user.fullName,
           email: user.email,
@@ -162,23 +181,31 @@ async function seedUsers() {
     }
   }
 
+        create: user,
+      })
+    )
+  );
+
+
   console.log("✅ Users seeded!");
 }
 
 async function main() {
   try {
+
     // Clear necessary tables first
     await prisma.ticket.deleteMany();
     await prisma.event.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
 
-    // Seed in correct order
+    console.log("✅ Database reset done!");
+
     const categories = await seedCategories();
     await seedEvents(categories);
     await seedUsers();
+    console.log("🎉 Database seeding completed!");
 
-    console.log("✅ Database seeding completed!");
   } catch (error) {
     console.error("❌ Error during seeding:", error);
     throw error;
