@@ -1,82 +1,25 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function EventPage() {
-  const events = [
-    {
-      title: "Jakarta Culinary Fiesta",
-      category: "Food & Drink",
-      image: "/food-event.png",
-      location: "Jakarta, Indonesia",
-      date: "Nov 23 - 29",
-      time: "7 PM - 11 PM",
-      price: "Rp 1.200.000",
-    },
-    {
-      title: "Startup Talks - Innovative Event for Founders",
-      category: "Educational & Business",
-      image: "/startup-talks.png",
-      location: "Jakarta, Indonesia",
-      date: "Dec 17",
-      time: "3 PM - 6 PM",
-      price: "Rp 500.000",
-    },
-    {
-      title: "Sinful Sunday By Party Out",
-      category: "Entertainment",
-      image: "/sinful-sunday.png",
-      location: "Bali, Indonesia",
-      date: "Nov 26",
-      time: "8:30 PM - 11:45 PM",
-      price: "Rp 1.100.000 - Rp 2.800.000",
-    },
-    {
-      title: "Peaceful Investing Workshop",
-      category: "Educational & Business",
-      image: "/investing-workshop.png",
-      location: "Bandung, Indonesia",
-      date: "Dec 10",
-      time: "8 AM - 5 PM",
-      price: "Rp 800.000",
-    },
-    {
-      title: "Poetry and Storytelling Open Mic",
-      category: "Cultural & Arts",
-      image: "/open-mic.png",
-      location: "Yogyakarta, Indonesia",
-      date: "Dec 31",
-      time: "11 AM - 2 PM",
-      price: "Rp 100.000 - Rp 300.000",
-    },
-    {
-      title: "South Jakarta Box Cricket Cup",
-      category: "Sports & Fitness",
-      image: "/cricket-event.png",
-      location: "Jakarta, Indonesia",
-      date: "Dec 16 - 17",
-      time: "3 PM - 8 PM",
-      price: "Rp 4.000.000",
-    },
-    {
-      title: "MindFool Indonesia Tour - Vir Das",
-      category: "Entertainment",
-      image: "/mindfool-tour.png",
-      location: "Surabaya, Indonesia",
-      date: "Dec 24",
-      time: "8 PM - 9:30 PM",
-      price: "Rp 800.000 - Rp 2.500.000",
-    },
-    {
-      title: "Indonesia 2024 Venture Capital World Summit",
-      category: "Educational & Business",
-      image: "/venture-summit.png",
-      location: "Bali, Indonesia",
-      date: "Feb 06",
-      time: "9 AM - 2 PM",
-      price: "Rp 20.000.000 - Rp 45.000.000",
-    },
-  ];
+export default async function EventPage() {
+  const eventResponse = await fetch("http://localhost:8000/events");
+  const events = await eventResponse.json();
+  const categoryResponse = await fetch("http://localhost:8000/categories");
+  const categories = await categoryResponse.json();
+
+  const formatEventDate = (isoString) => {
+    const date = new Date(isoString);
+    return date.toISOString().split("T")[0]; // Hanya mengambil tanggal (YYYY-MM-DD)
+  };
+
+  const formatEventTime = (isoString) => {
+    const date = new Date(isoString);
+    // Mengubah waktu ke GMT+7
+    date.setHours(date.getHours() + 7); // Menambahkan 7 jam untuk GMT+7
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); // Menampilkan jam dalam format HH:MM
+  };
 
   return (
     <section className="min-h-screen">
@@ -149,13 +92,17 @@ export default function EventPage() {
           </div>
           <div className="mb-6">
             <h4 className="font-semibold mb-2">Category</h4>
-            <ul className="space-y-2">
-              <li>Adventure Travel</li>
-              <li>Art Exhibitions</li>
-              <li>Auctions & Fundraisers</li>
-              <li>Beer Festivals</li>
-              <li>Benefit Concerts</li>
-            </ul>
+            {categories.data.map((category, index) => (
+              <div key={index}>
+                <ul className="space-y-2">
+                  <li>
+                    <label>
+                      <input type="checkbox" className="mr-2" /> {category.name}
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            ))}
           </div>
         </aside>
 
@@ -171,32 +118,35 @@ export default function EventPage() {
             </select>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event, index) => (
-              <div
-                key={index}
-                className="border rounded-lg shadow bg-white flex flex-col justify-between"
-              >
-                <div className="relative w-full h-40">
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    className="object-cover rounded-t-lg"
-                  />
+            {events.data.map((event, index) => (
+              <Link key={index} href={`/exhibition/${event.id}`}>
+                <div className="border rounded-lg shadow bg-white flex flex-col justify-between">
+                  <div className="relative w-full h-40">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      className="object-cover rounded-t-lg"
+                    />
+                  </div>
+                  <div className="p-4 flex-grow flex flex-col">
+                    <span className="text-xs text-yellow-600 font-bold">
+                      {event.Category.name}
+                    </span>
+                    <h4 className="font-bold text-lg mt-2">{event.title}</h4>
+                    <p className="text-sm text-gray-500">{event.location}</p>
+                    <p className="text-sm text-gray-500">
+                      {formatEventDate(event.eventSchedule)}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatEventTime(event.eventSchedule)}
+                    </p>
+                  </div>
+                  <div className="p-4 border-t mt-auto">
+                    <p className="font-bold text-lg">{`Rp. ${event.ticketPrice}`}</p>
+                  </div>
                 </div>
-                <div className="p-4 flex-grow flex flex-col">
-                  <span className="text-xs text-yellow-600 font-bold">
-                    {event.category}
-                  </span>
-                  <h4 className="font-bold text-lg mt-2">{event.title}</h4>
-                  <p className="text-sm text-gray-500">{event.location}</p>
-                  <p className="text-sm text-gray-500">{event.date}</p>
-                  <p className="text-sm text-gray-500">{event.time}</p>
-                </div>
-                <div className="p-4 border-t mt-auto">
-                  <p className="font-bold text-lg">{event.price}</p>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

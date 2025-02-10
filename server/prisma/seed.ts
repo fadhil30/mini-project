@@ -60,10 +60,24 @@ async function seedCategories() {
   });
 
   console.log("✅ Categories seeded!");
-  return { CategoryEnt, CategoryTech }; // Return categories needed for events
+  return {
+    CategoryEnt,
+    CategoryTech,
+    CategoryArt,
+    CategoryEdu,
+    CategorySport,
+    CategoryTravel,
+  }; // Return categories needed for events
 }
 
-async function seedEvents(categories: { CategoryEnt: any; CategoryTech: any }) {
+async function seedEvents(categories: {
+  CategoryEnt: any;
+  CategoryTech: any;
+  CategoryTravel: any;
+  CategoryArt: any;
+  CategoryEdu: any;
+  CategorySport: any;
+}) {
   console.log("🌱 Seeding events...");
 
   await prisma.event.createMany({
@@ -95,6 +109,62 @@ async function seedEvents(categories: { CategoryEnt: any; CategoryTech: any }) {
         eventType: "FREE",
         ticketPrice: 0,
         ticketAvailability: 1500,
+      },
+      {
+        title: "Jakarta Art & Culture Expo",
+        image:
+          "https://res.cloudinary.com/dwtjculny/image/upload/v1739182814/britt-gaiser-hSAlu33padA-unsplash_obxvxg.jpg",
+        description:
+          "Explore the beauty of art and culture at the Jakarta Art & Culture Expo. Featuring talented artists, performers, and cultural showcases from around Indonesia, this event is perfect for art lovers and enthusiasts. Discover stunning paintings, sculptures, and performances that highlight the rich heritage of Indonesia.",
+        location: "Jakarta Convention Center, Jakarta, Indonesia",
+        eventSchedule: new Date("2024-07-10T10:00:00.000Z"),
+        categoryId: categories.CategoryArt.id,
+        host: "Indonesian Art Foundation",
+        eventType: "FREE",
+        ticketPrice: 0,
+        ticketAvailability: 5000,
+      },
+      {
+        title: "Bali International Film Festival",
+        image:
+          "https://res.cloudinary.com/dwtjculny/image/upload/v1739183197/dario-daniel-silva-RyUOtzoTkZk-unsplash_k7u6xp.jpg",
+        description:
+          "Experience world-class cinema at the Bali International Film Festival! This prestigious event brings together filmmakers, actors, and film enthusiasts from around the globe to celebrate the art of storytelling. Watch exclusive premieres, join panel discussions, and engage with the creative minds behind your favorite films.",
+        location: "Nusa Dua, Bali, Indonesia",
+        eventSchedule: new Date("2024-08-05T18:30:00.000Z"),
+        categoryId: categories.CategoryEnt.id,
+        host: "Bali Film Society",
+        eventType: "TICKETED",
+        ticketPrice: 250000,
+        ticketAvailability: 750,
+      },
+      {
+        title: "Tech Summit Asia 2024",
+        image:
+          "https://res.cloudinary.com/dwtjculny/image/upload/v1739182840/md-duran-rE9vgD_TXgM-unsplash_nfcgbs.jpg",
+        description:
+          "Join the biggest tech conference in Asia, where industry leaders, startups, and tech enthusiasts gather to discuss the latest trends and innovations. With keynote speeches from tech giants, hands-on workshops, and networking opportunities, this is the must-attend event for anyone passionate about technology and business.",
+        location: "Marina Bay Sands, Singapore",
+        eventSchedule: new Date("2024-09-20T09:00:00.000Z"),
+        categoryId: categories.CategoryTech.id,
+        host: "Tech World Summit",
+        eventType: "TICKETED",
+        ticketPrice: 750000,
+        ticketAvailability: 2000,
+      },
+      {
+        title: "Bromo Adventure Trail 2024",
+        image:
+          "https://res.cloudinary.com/dwtjculny/image/upload/v1739182960/andraz-lazic-NhZtol0U0dE-unsplash_r2ev3v.jpg",
+        description:
+          "Embark on an exhilarating adventure at Bromo Adventure Trail 2024! This event is perfect for outdoor enthusiasts who love trail running, hiking, and exploring breathtaking landscapes. Experience the stunning views of Mount Bromo while testing your endurance on one of the most scenic trails in Indonesia.",
+        location: "Mount Bromo, East Java, Indonesia",
+        eventSchedule: new Date("2024-10-15T05:30:00.000Z"),
+        categoryId: categories.CategorySport.id,
+        host: "Bromo Trail Runners",
+        eventType: "TICKETED",
+        ticketPrice: 300000,
+        ticketAvailability: 500,
       },
     ],
   });
