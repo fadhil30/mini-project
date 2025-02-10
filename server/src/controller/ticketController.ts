@@ -20,7 +20,7 @@ export const buyTicket = async (req: AuthRequest, res: Response) => {
     return;
     }
 
-    const finalPrice = event.price - (discountUsed || 0);
+    const finalPrice = event.ticketPrice - (discountUsed || 0);
 
     const ticket = await prisma.ticket.create({
       data: {
