@@ -64,8 +64,11 @@ model Event {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   Category           Category  @relation(fields: [categoryId], references: [id])
-  user               User      @relation(fields: [id], references: [id])
+  // user               User      @relation(fields: [id], references: [id])
   Ticket             Ticket[]
+  User               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
+
 }
 
 model Ticket {
@@ -93,4 +96,5 @@ model Category {
   name  String
   image String
   Event Event[]
+
 }

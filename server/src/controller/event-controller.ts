@@ -86,3 +86,34 @@ export async function GetEvents(
     res.status(500).json({ ok: false, message: "Error fetching events" });
   }
 }
+
+export async function GetDetailEvent(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id: +req.params.id },
+      include: { Category: true },
+    });
+    const response = {
+      id: event?.id,
+      title: event?.title,
+      image: event?.image,
+      description: event?.description,
+      location: event?.location,
+      eventSchedule: event?.eventSchedule,
+      category: event?.Category.name,
+      ticketPrice: event?.ticketPrice,
+      ticketAvailability: event?.ticketAvailability,
+      host: event?.host,
+    };
+    res.status(200).json({ ok: true, data: response });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ ok: false, message: "Error fetching detail event details" });
+  }
+}
