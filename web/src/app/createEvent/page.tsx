@@ -23,7 +23,7 @@ const EventForm = () => {
   useEffect(() => {
     async function getCategories() {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/categories");
+        const response = await fetch("http://localhost:8000/category");
 
         const data: Categories = await response.json();
 
@@ -60,7 +60,7 @@ const EventForm = () => {
       );
       formEvent.append("host", "Ahmad");
 
-      await fetch("http://localhost:8000/api/v1/events", {
+      await fetch("http://localhost:8000/events", {
         method: "POST",
         body: formEvent,
       });

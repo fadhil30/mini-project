@@ -1,18 +1,13 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const register = async (req: Request, res: Response) => {
-  const { fullName, email, password, role } = req.body;
-
-  if (!Object.values(Role).includes(role)) {
-    res.status(400).json({ message: "Invalid role" });
-    return;
-  }
+  const { fullName, email, password } = req.body;
 
   const referralCode = Math.random()
     .toString(36)
@@ -26,7 +21,6 @@ export const register = async (req: Request, res: Response) => {
         fullName,
         email,
         password: hashedPassword,
-        role,
         referralCode,
       },
     });
@@ -36,6 +30,30 @@ export const register = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "Error registering user", error: err.message });
+  }
+};
+
+export const registerPromotor = async (req: Request, res: Response) => {
+  const { fullName, email, password } = req.body;
+
+  try {
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Buat promotor baru
+    const promotor = await prisma.promotor.create({
+      data: {
+        fullName,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    res.status(201).json({ message: "Promotor registered", promotor });
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({ message: "Error registering promotor", error: err.message });
   }
 };
 
@@ -50,13 +68,19 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {});
+    const token = jwt.sign(
+      { id: user.id
+        
+       },
+      process.env.JWT_SECRET as string,
+      {}
+    );
 
     // Set cookie untuk menyimpan token
-    res.cookie("authToken", token, {
+    res.cookie("authToken", token, { 
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Hanya gunakan HTTPS di produksi
-      sameSite: "none", // Hindari pengiriman lintas situs
+      secure: false, // Hanya gunakan HTTPS di produksi
+      sameSite: "lax", // Hindari pengiriman lintas situs
     });
 
     res.json({ message: "Logged in", token });
