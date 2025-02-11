@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 
@@ -7,13 +7,11 @@ const prisma = new PrismaClient();
 async function seedCategories() {
   console.log("🌱 Seeding categories...");
 
-
   // Clear existing categories
   await prisma.event.deleteMany();
   await prisma.category.deleteMany();
 
-
-  const categoryEnt = await prisma.category.create({
+  const CategoryEnt = await prisma.category.create({
     data: {
       name: "Entertainment",
       image:
@@ -21,7 +19,31 @@ async function seedCategories() {
     },
   });
 
-  const categoryTech = await prisma.category.create({
+  const CategoryEdu = await prisma.category.create({
+    data: {
+      name: "Education & Business",
+      image:
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738661950/blog/images/fmacmq5xz3aubxzkktuh.jpg",
+    },
+  });
+
+  const CategoryArt = await prisma.category.create({
+    data: {
+      name: "Art & Culture",
+      image:
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662035/blog/images/nyxn2xvj7e9powsxta43.jpg",
+    },
+  });
+
+  const CategorySport = await prisma.category.create({
+    data: {
+      name: "Sports & Fitness",
+      image:
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662166/blog/images/nw0islqf0jfvjj5on6hb.jpg",
+    },
+  });
+
+  const CategoryTech = await prisma.category.create({
     data: {
       name: "Technology & Innovation",
       image:
@@ -29,63 +51,36 @@ async function seedCategories() {
     },
   });
 
-  console.log("✅ Categories seeded!");
-  return { categoryEnt, categoryTech };
-}
-
-async function seedEvents(categories: { categoryEnt: any; categoryTech: any }) {
-  console.log("🌱 Seeding events...");
-  console.log("✅ Categories for events:", categories);
-
-  const eventsData = [
-    {
-      title: "The Grand Music Festival",
+  const CategoryTravel = await prisma.category.create({
+    data: {
+      name: "Travel & Adventure",
       image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738738374/muneeb-syed-4_M8uIfPEZw-unsplash_aprvfh.jpg",
-      description: "An amazing music festival!",
-      location: "Ancol Beach, North Jakarta, Indonesia",
-      eventSchedule: new Date("2024-06-15T16:00:00.000Z"),
-      category: { connect: { id: categories.categoryEnt.id } }, // Perbaikan di sini
-      host: "Live Nation Indonesia",
-      eventType: "TICKETED",
-      ticketPrice: 450000,
-      ticketAvailability: 1000,
+        "https://res.cloudinary.com/dwtjculny/image/upload/v1738662238/blog/images/ccpupzzyy2lgbrw91rca.jpg",
     },
-    {
-      title: "Tech Innovators Summit",
-      image:
-        "https://res.cloudinary.com/dwtjculny/image/upload/v1738739066/teemu-paananen-bzdhc5b3Bxs-unsplash_sfgcxv.jpg",
-      description: "The biggest tech summit of the year!",
-      location: "Grand Hyatt Jakarta, Indonesia",
-      eventSchedule: new Date("2024-07-20T08:00:00.000Z"),
-      category: { connect: { id: categories.categoryTech.id } }, // Perbaikan di sini
-      host: "Tech Innovators Summit",
-      eventType: "FREE",
-      ticketPrice: 0,
-      ticketAvailability: 1500,
-    },
-  ];
-
+  });
 
   console.log("✅ Categories seeded!");
   return {
     CategoryEnt,
     CategoryTech,
     CategoryArt,
-    CategoryEdu,
     CategorySport,
+    CategoryEdu,
     CategoryTravel,
-  }; // Return categories needed for events
+  };
 }
 
-async function seedEvents(categories: {
-  CategoryEnt: any;
-  CategoryTech: any;
-  CategoryTravel: any;
-  CategoryArt: any;
-  CategoryEdu: any;
-  CategorySport: any;
-}) {
+async function seedEvents(
+  categories: {
+    CategoryEnt: any;
+    CategoryTech: any;
+    CategoryTravel: any;
+    CategoryArt: any;
+    CategoryEdu: any;
+    CategorySport: any;
+  },
+  promotors: { id: number }[]
+) {
   console.log("🌱 Seeding events...");
 
   await prisma.event.createMany({
@@ -103,6 +98,7 @@ async function seedEvents(categories: {
         eventType: "TICKETED",
         ticketPrice: 450000,
         ticketAvailability: 1000,
+        promotorId: promotors[0].id,
       },
       {
         title: "Tech Innovators Summit",
@@ -117,6 +113,7 @@ async function seedEvents(categories: {
         eventType: "FREE",
         ticketPrice: 0,
         ticketAvailability: 1500,
+        promotorId: promotors[1].id,
       },
       {
         title: "Jakarta Art & Culture Expo",
@@ -131,6 +128,7 @@ async function seedEvents(categories: {
         eventType: "FREE",
         ticketPrice: 0,
         ticketAvailability: 5000,
+        promotorId: promotors[0].id,
       },
       {
         title: "Bali International Film Festival",
@@ -145,6 +143,7 @@ async function seedEvents(categories: {
         eventType: "TICKETED",
         ticketPrice: 250000,
         ticketAvailability: 750,
+        promotorId: promotors[0].id,
       },
       {
         title: "Tech Summit Asia 2024",
@@ -159,6 +158,7 @@ async function seedEvents(categories: {
         eventType: "TICKETED",
         ticketPrice: 750000,
         ticketAvailability: 2000,
+        promotorId: promotors[1].id,
       },
       {
         title: "Bromo Adventure Trail 2024",
@@ -173,20 +173,10 @@ async function seedEvents(categories: {
         eventType: "TICKETED",
         ticketPrice: 300000,
         ticketAvailability: 500,
+        promotorId: promotors[0].id,
       },
     ],
   });
-
-  for (const event of eventsData) {
-    try {
-      await prisma.event.create({ data: event });
-      console.log(`✅ Event created: ${event.title}`);
-    } catch (error) {
-      console.error(`❌ Error creating event ${event.title}:`, error);
-    }
-  }
-
-
   console.log("✅ Events seeded!");
 }
 
@@ -198,7 +188,6 @@ async function seedUsers() {
       fullName: "Ali Budi",
       email: "ali.budi@email.com",
       password: await bcrypt.hash("password123", 10),
-      role: Role.CUSTOMER,
       referralCode: uuidv4(),
       createdAt: new Date(),
     },
@@ -206,7 +195,6 @@ async function seedUsers() {
       fullName: "Siti Nurhaliza",
       email: "siti.nurhaliza@email.com",
       password: await bcrypt.hash("securepass", 10),
-      role: Role.CUSTOMER,
       referralCode: uuidv4(),
       createdAt: new Date(),
     },
@@ -214,7 +202,6 @@ async function seedUsers() {
       fullName: "John Doe",
       email: "john.doe@email.com",
       password: await bcrypt.hash("johndoepass", 10),
-      role: Role.CUSTOMER,
       referralCode: uuidv4(),
       createdAt: new Date(),
     },
@@ -222,23 +209,20 @@ async function seedUsers() {
       fullName: "Jane Smith",
       email: "jane.smith@email.com",
       password: await bcrypt.hash("janepass", 10),
-      role: Role.CUSTOMER,
       referralCode: uuidv4(),
       createdAt: new Date(),
     },
   ];
 
-  await Promise.all(
-    users.map((user) =>
-      prisma.user.upsert({
+  for (const user of users) {
+    try {
+      await prisma.user.upsert({
         where: { email: user.email },
         update: {},
-
         create: {
           fullName: user.fullName,
           email: user.email,
           password: user.password,
-          role: user.role,
           referralCode: user.referralCode,
           createdAt: user.createdAt,
         },
@@ -251,34 +235,71 @@ async function seedUsers() {
     }
   }
 
-        create: user,
-      })
-    )
+  console.log("✅ Users seeded!");
+}
+
+async function seedPromotors() {
+  console.log("🌱 Seeding promotors...");
+
+  const promotorList: { id: number }[] = [];
+  const promotors = [
+    {
+      fullName: "John Doe",
+      email: "johndoe@example.com",
+      password: "password123",
+      emailConfirmed: true,
+    },
+    {
+      fullName: "Jane Smith",
+      email: "janesmith@example.com",
+      password: "securepass456",
+      emailConfirmed: false,
+    },
+  ];
+
+  // Hash all passwords asynchronously
+  const hashedPasswords = await Promise.all(
+    promotors.map((p) => bcrypt.hash(p.password, 10))
   );
 
+  // Insert promotors
+  for (let i = 0; i < promotors.length; i++) {
+    const result = await prisma.promotor.upsert({
+      where: { email: promotors[i].email },
+      update: {},
+      create: {
+        fullName: promotors[i].fullName,
+        email: promotors[i].email,
+        password: hashedPasswords[i],
+        emailConfirmed: promotors[i].emailConfirmed,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+    promotorList.push({ id: result.id });
+    console.log(`✅ Inserted/Updated: ${promotors[i].email}`);
+  }
 
-  console.log("✅ Users seeded!");
+  console.log("✅ Promotors seeding completed!");
+  return promotorList;
 }
 
 async function main() {
   try {
-
-    // Seed in correct order
-
-    console.log("🚀 Resetting database...");
+    // Clear necessary tables first
     await prisma.ticket.deleteMany();
     await prisma.event.deleteMany();
-    await prisma.user.deleteMany();
     await prisma.category.deleteMany();
+    await prisma.user.deleteMany();
 
-    console.log("✅ Database reset done!");
-
+    // Seed in correct order
+    const promotors = await seedPromotors();
     const categories = await seedCategories();
-    await seedEvents(categories);
+    console.log(categories);
+    await seedEvents(categories, promotors);
     await seedUsers();
 
-    console.log("🎉 Database seeding completed!");
-
+    console.log("✅ Database seeding completed!");
   } catch (error) {
     console.error("❌ Error during seeding:", error);
     throw error;

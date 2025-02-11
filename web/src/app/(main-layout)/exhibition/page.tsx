@@ -122,7 +122,7 @@ export default function EventPage() {
             <h3 className="text-2xl font-bold">Events</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.length > 0 ? (
+            {filteredEvents?.length > 0 ? (
               filteredEvents.map((event) => (
                 <Link key={event.id} href={`/exhibition/${event.id}`}>
                   <div className="border rounded-lg shadow bg-white flex flex-col justify-between">
