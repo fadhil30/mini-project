@@ -54,7 +54,9 @@ export default async function PopularEvent() {
                 {formatEventTime(event.eventSchedule)}
               </p>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-sm font-bold">{event.price}</span>
+                <span className="text-sm font-bold text-[#287921]">
+                  {event.price}
+                </span>
                 {event.interested && (
                   <span className="text-sm text-gray-500">
                     {event.interested}

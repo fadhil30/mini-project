@@ -162,7 +162,13 @@ export default async function EventDetailPage({ params }) {
             {/* Ticket Information */}
             <div>
               <h3 className="font-bold text-lg mb-2">Ticket Information</h3>
-              <p>{formatPrice(eventDetail.data.ticketPrice)}</p>
+              <p>
+                {formatPrice(
+                  eventDetail.data.ticketPrice === 0
+                    ? "FREE"
+                    : eventDetail.data.ticketPrice
+                )}
+              </p>
             </div>
           </div>
         </div>
