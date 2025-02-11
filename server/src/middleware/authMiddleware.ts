@@ -14,6 +14,7 @@ interface DecodedToken {
 interface RequestWithUser extends Request {
   user?: User;
   
+  
 }
 
 export const authMiddleware = async (
@@ -45,3 +46,22 @@ export const authMiddleware = async (
     res.status(401).json({ message: "Token is not valid" });
   }
 };
+
+//export function roleGuard(role: string){
+//   return async function (req: RequestWithUser, res: Response, next: NextFunction) {
+//       try {
+
+//           if (req.user?.role === "CUSTOMER") {
+//               next();
+//               return;
+//             }
+            
+//           if (req.user?.role !== role){
+//               res.status(401).json({message: "unathorized access. forbidden!"});
+//               return;
+//           }
+//       } catch (error) {
+          
+//       }
+//   }
+// }

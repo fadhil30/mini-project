@@ -1,3 +1,4 @@
+import { Promotor } from './../node_modules/.prisma/client/index.d';
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
@@ -10,6 +11,7 @@ async function seedCategories() {
   // Clear existing categories
   await prisma.event.deleteMany();
   await prisma.category.deleteMany();
+
 
   const CategoryEnt = await prisma.category.create({
     data: {
@@ -50,7 +52,7 @@ async function seedCategories() {
         "https://res.cloudinary.com/dwtjculny/image/upload/v1738662197/blog/images/hagaevxffskefxhhha0m.jpg",
     },
   });
-
+  
   const CategoryTravel = await prisma.category.create({
     data: {
       name: "Travel & Adventure",
@@ -238,6 +240,7 @@ async function seedUsers() {
   console.log("✅ Users seeded!");
 }
 
+
 async function seedPromotors() {
   console.log("🌱 Seeding promotors...");
 
@@ -292,6 +295,8 @@ async function main() {
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
 
+    // Seed in correct order
+    await seedPromotors();
     // Seed in correct order
     const promotors = await seedPromotors();
     const categories = await seedCategories();

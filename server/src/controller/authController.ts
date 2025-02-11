@@ -69,13 +69,15 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { id: user.id },
+      { id: user.id
+        
+       },
       process.env.JWT_SECRET as string,
       {}
     );
 
     // Set cookie untuk menyimpan token
-    res.cookie("authToken", token, {
+    res.cookie("authToken", token, { 
       httpOnly: true,
       secure: false, // Hanya gunakan HTTPS di produksi
       sameSite: "lax", // Hindari pengiriman lintas situs

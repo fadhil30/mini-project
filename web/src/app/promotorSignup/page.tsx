@@ -26,7 +26,7 @@ export default function SignUpPromoterPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/auth/register", {
+      const response = await fetch("http://localhost:8000/promotor/registerPromotor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,20 +108,6 @@ export default function SignUpPromoterPage() {
                 {passwordVisible ? "Hide" : "Show"}
               </button>
             </div>
-          </div>
-
-          
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-1" htmlFor="role"></label>
-            <select
-              id="role"
-              value={formData.role}
-              onChange={handleInputChange}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300"
-              required
-            >
-              <option value="customer">PROMOTER</option>
-            </select>
           </div>
 
           <button

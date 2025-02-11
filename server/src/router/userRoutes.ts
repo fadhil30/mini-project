@@ -4,8 +4,14 @@ import { roleMiddleware } from "../middleware/roleMiddleware";
 
 const router = express.Router();
 
-// router.get("/protected-route", authMiddleware, roleMiddleware(Role.PROMOTER), (req, res) => {
-//   res.json({ message: "You have access to this route!" });
-// });
+// Hanya promotor yang bisa mengakses route ini
+router.get(
+  "/protected-route",
+  authMiddleware,
+  roleMiddleware("promotor"),
+  (req, res) => {
+    res.json({ message: "You have access to this route as a Promotor!" });
+  }
+);
 
 export default router;

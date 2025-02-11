@@ -11,7 +11,7 @@ import cors from "cors";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: "http://localhost:3000",credentials: true}));
 
 app.get("/api/v1", (req, res) => {
   res.status(200).json({ message: "API Connected" });
@@ -23,10 +23,11 @@ app.use("/auth", authRoutes);
 app.use("/customer", ticketRoutes);
 app.use("/user", userRoutes);
 app.use("/events", eventRouter);
-app.use("/categories", categoryRouter);
-
+app.use("/category", categoryRouter);
+app.use("/promotor", authRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+ 
