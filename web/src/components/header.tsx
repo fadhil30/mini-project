@@ -16,7 +16,7 @@ export default function Header() {
   };
 
   return (
-    <nav className="fixed z-10 w-full bg-[#232536] px-4 py-4 md:px-12 font-montserrat text-lg font-medium">
+    <nav className="fixed z-50 w-full bg-[#232536] px-4 py-4 md:px-12 font-montserrat text-lg font-medium">
       <div className="flex items-center justify-between h-16">
         {/* Logo */}
         <div className="relative w-[150px] h-[40px] md:w-[200px]">

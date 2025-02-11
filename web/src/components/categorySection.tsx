@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default async function CategorySection() {
-  const response = await fetch("http://localhost:8000/category");
+  const response = await fetch("http://localhost:8000/categories");
   const categories = await response.json();
 
   return (

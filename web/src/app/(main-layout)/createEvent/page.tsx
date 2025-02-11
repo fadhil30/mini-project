@@ -1,6 +1,4 @@
 "use client";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import { Categories } from "@/types/category";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
@@ -17,13 +15,14 @@ const EventForm = () => {
     ticketPrice: "0",
     image: null as File | null,
     eventType: "TICKETED",
+    host: "",
   });
   const [categories, setCategories] = useState<Categories>();
 
   useEffect(() => {
     async function getCategories() {
       try {
-        const response = await fetch("http://localhost:8000/category");
+        const response = await fetch("http://localhost:8000/categories");
 
         const data: Categories = await response.json();
 
@@ -58,7 +57,7 @@ const EventForm = () => {
           `${formData.eventStartDate}T${formData.eventStartTime}`
         ).toISOString()
       );
-      formEvent.append("host", "Ahmad");
+      formEvent.append("host", formData.host);
 
       await fetch("http://localhost:8000/events", {
         method: "POST",
@@ -71,7 +70,6 @@ const EventForm = () => {
 
   return (
     <section className="min-h-screen">
-      <Header />
       <div className="flex flex-row pl-11 pt-28 justify-start items-center gap-12 w-full">
         <div className="relative w-7 h-5">
           <Image
@@ -226,6 +224,25 @@ const EventForm = () => {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
+                htmlFor="host"
+              >
+                Host
+              </label>
+              <input
+                type="text"
+                id="host"
+                value={formData.host}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, host: e.target.value }))
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Host"
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
                 htmlFor="location"
               >
                 Location
@@ -372,7 +389,6 @@ const EventForm = () => {
           </div>
         </form>
       </div>
-      <Footer />
     </section>
   );
 };

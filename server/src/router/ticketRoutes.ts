@@ -6,7 +6,7 @@ import { roleMiddleware } from "../middleware/roleMiddleware";
 const router = express.Router();
 
 router.use(authMiddleware);
-router.use(roleMiddleware("user")); // Menggunakan "User" sebagai tipe untuk middleware
+// router.use(roleMiddleware(Role.CUSTOMER));
 
 router.post("/buy", buyTicket);
 

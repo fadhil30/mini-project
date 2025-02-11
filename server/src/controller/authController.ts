@@ -90,6 +90,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
+  req.user = null;
   res.clearCookie("authToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

@@ -14,6 +14,7 @@ interface DecodedToken {
 interface RequestWithUser extends Request {
   user?: User;
   
+  
 }
 
 export const authMiddleware = async (
