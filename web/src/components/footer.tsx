@@ -1,6 +1,9 @@
 import Image from "next/image";
 
-export default function Footer() {
+export default async function Footer() {
+  const response = await fetch("http://localhost:8000/categories");
+  const categories = await response.json();
+
   return (
     <footer>
       <div className="bg-[#232536] text-white py-10 px-6">
@@ -27,16 +30,11 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="font-bold mb-4">Categories</h4>
-            <ul className="space-y-2 text-sm">
-              <li>Concerts & Gigs</li>
-              <li>Festivals & Lifestyle</li>
-              <li>Business & Networking</li>
-              <li>Food & Drinks</li>
-              <li>Performing Arts</li>
-              <li>Sports & Outdoors</li>
-              <li>Exhibitions</li>
-              <li>Workshops, Conferences & Classes</li>
-            </ul>
+            {categories.data.map((category, index) => (
+              <ul key={index} className="space-y-2 text-sm">
+                <li>{category.name}</li>
+              </ul>
+            ))}
           </div>
           <div>
             <h4 className="font-bold mb-4">Follow Us</h4>

@@ -1,6 +1,4 @@
 "use client";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import { Categories } from "@/types/category";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
@@ -72,7 +70,6 @@ const EventForm = () => {
 
   return (
     <section className="min-h-screen">
-      <Header />
       <div className="flex flex-row pl-11 pt-28 justify-start items-center gap-12 w-full">
         <div className="relative w-7 h-5">
           <Image
@@ -392,7 +389,6 @@ const EventForm = () => {
           </div>
         </form>
       </div>
-      <Footer />
     </section>
   );
 };
