@@ -13,6 +13,7 @@ interface DecodedToken {
 // **Tambahkan tipe `RequestWithUser` agar `req.user` dikenali**
 interface RequestWithUser extends Request {
   user?: User;
+  
 }
 
 export const authMiddleware = async (

@@ -61,6 +61,7 @@ export async function CreateEvent(
         ticketAvailability: +ticketAvailability,
         host,
         eventType,
+        promotorId: req.user.id,
       },
     });
 
