@@ -1,5 +1,3 @@
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -41,7 +39,6 @@ export default async function EventDetailPage({ params }) {
 
   return (
     <section>
-      <Header />
       <div className="max-w-5xl mx-auto pt-32 pb-12">
         {/* Event Header */}
         <div className="relative w-full h-[400px] mb-6">
@@ -80,7 +77,7 @@ export default async function EventDetailPage({ params }) {
             <h1 className="text-3xl font-bold">{eventDetail.data.title}</h1>
           </div>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
-            <Link href="/ticketbooking">
+            <Link href={`/transaction/${id}`}>
               <button className="bg-yellow-400 px-6 py-2 text-sm font-bold rounded-lg hover:scale-105 transition">
                 Buy Tickets
               </button>
@@ -161,7 +158,7 @@ export default async function EventDetailPage({ params }) {
           <div className="space-y-6">
             {/* Ticket Information */}
             <div>
-              <h3 className="font-bold text-lg mb-2">Ticket Information</h3>
+              <h3 className="font-bold text-lg mb-2">Ticket Price</h3>
               <p>
                 {formatPrice(
                   eventDetail.data.ticketPrice === 0
@@ -173,7 +170,6 @@ export default async function EventDetailPage({ params }) {
           </div>
         </div>
       </div>
-      <Footer />
     </section>
   );
 }

@@ -10,8 +10,6 @@ export async function CreateEvent(
   next: NextFunction
 ) {
   try {
-    console.log(req.body);
-    console.log(req.file);
     const {
       title,
       description,
@@ -33,20 +31,6 @@ export async function CreateEvent(
       folder: "blog/images",
     });
     fs.unlink(req.file.path);
-
-    // Convert eventStartDate to just the date (yyyy-mm-dd)
-    // const eventStartDateOnly = new Date(eventStartDate)
-    //   .toISOString()
-    //   .split("T")[0];
-
-    // // Convert eventStartTime and eventEndTime to time in GMT+7
-    // const convertToGMT7 = (time: string) => {
-    //   const date = new Date(`1970-01-01T${time}Z`); // Using a base date of '1970-01-01'
-    //   date.setHours(date.getHours() + 7); // Convert to GMT+7
-    //   return date.toLocaleTimeString("en-GB", { hour12: false }); // Format as 24-hour time
-    // };
-
-    // const eventStartTimeOnly = convertToGMT7(eventStartTime);
 
     // Save the new event
     const newEvent = await prisma.event.create({
