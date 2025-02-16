@@ -1,11 +1,10 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { PrismaClient, User, Promotor } from "@prisma/client";
+import { PrismaClient, type User, type Promotor } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET as string;
-
 
 export async function register(req: Request, res: Response) {
   const { fullName, email, password, referralCodeUsed } = req.body;
@@ -46,17 +45,18 @@ export async function register(req: Request, res: Response) {
           data: {
             userId: referrer.id,
             code: Math.random().toString(36).substring(2, 10).toUpperCase(), // Generate kode unik
-            discount: 10, // Diskon 10%
+            discountRate: 10, // Diskon 10%
             used: false, // Kupon belum digunakan
-            expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Berlaku 1 bulan
+            expiredDate: new Date(
+              new Date().setMonth(new Date().getMonth() + 1)
+            ), // Berlaku 1 bulan
           },
         });
 
-        await prisma.redeemedPoint.create({
+        await prisma.point.create({
           data: {
             userId: referrer.id,
             balance: referrer.points + 1000, // Tambah poin referrer
-            used: false,
             expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
           },
         });
@@ -75,6 +75,14 @@ export async function register(req: Request, res: Response) {
       },
     });
 
+    // Buat wallet baru untuk pengguna
+    await prisma.wallet.create({
+      data: {
+        userId: newUser.id,
+        balance: 0,
+      },
+    });
+
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -85,27 +93,12 @@ export async function register(req: Request, res: Response) {
         referralCode: newUser.referralCode,
       },
     });
-
-      },
-    });
-
-    // Buat wallet baru untuk pengguna
-    await prisma.wallet.create({
-      data: {
-        userId: user.id,
-        balance: 0,
-      },
-    });
-
-    res.status(201).json({ message: "User registered", user });
-
   } catch (err: any) {
     res
       .status(500)
       .json({ message: "Error registering user", error: err.message });
   }
 }
-
 
 export const registerPromotor = async (req: Request, res: Response) => {
   const { fullName, email, password } = req.body;
@@ -173,7 +166,6 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }
 };
-
 
 export const getUser = async (req: Request, res: Response) => {
   try {

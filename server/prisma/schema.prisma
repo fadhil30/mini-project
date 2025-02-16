@@ -76,12 +76,15 @@ model Event {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
-  Category           Category  @relation(fields: [categoryId], references: [id])
-  Promotor           Promotor  @relation(fields: [promotorId], references: [id])
-  Ticket             Ticket[]
-  Attendee            Attendee[]
-  PromotorTrans      PromotorTrans[]
-  registrations      Registration[]
+  Category      Category        @relation(fields: [categoryId], references: [id])
+  Promotor      Promotor        @relation(fields: [promotorId], references: [id])
+  Ticket        Ticket[]
+  Attendee      Attendee[]
+  PromotorTrans PromotorTrans[]
+  registrations Registration[]
+  Promotion     Promotion[]
+  Transaction   Transaction[]
+  Review        Review[]
 }
 
 model Attendee {
@@ -93,13 +96,13 @@ model Attendee {
 }
 
 model PromotorTrans {
-  id        String   @id @default(uuid())
-  amount    Float
-  eventId   Int
+  id             String        @id @default(uuid())
+  amount         Float
+  eventId        Int
   registrationId Int
-  event     Event    @relation(fields: [eventId], references: [id])
-  createdAt DateTime @default(now())
-   registration Registration? @relation(fields: [registrationId], references: [id])
+  event          Event         @relation(fields: [eventId], references: [id])
+  createdAt      DateTime      @default(now())
+  registration   Registration? @relation(fields: [registrationId], references: [id])
 }
 
 model Registration {
@@ -114,14 +117,15 @@ model Registration {
   PromotorTrans PromotorTrans[]
 }
 
-
 model Ticket {
-   id            Int         @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   ticketCode    String      @unique
   totalPrice    Decimal
   transactionId Int
   createdAt     DateTime    @default(now())
   Transaction   Transaction @relation(fields: [transactionId], references: [id])
+  Event         Event?      @relation(fields: [eventId], references: [id])
+  eventId       Int?
 }
 
 model Promotion {
@@ -148,16 +152,15 @@ model Coupon {
 }
 
 model Transaction {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  eventId     Int
-  amount      Decimal
-  Event       Event    @relation(fields: [eventId], references: [id])
-  User        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  Ticket      Ticket[]
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  amount    Decimal
+  Event     Event    @relation(fields: [eventId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  Ticket    Ticket[]
 }
-
 
 model Point {
   id        Int      @id @default(autoincrement())
