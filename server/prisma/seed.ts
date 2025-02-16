@@ -149,6 +149,7 @@ async function main() {
     },
   });
 
+
   const event3 = await prisma.event.create({
     data: {
       title: "Health Workshop",

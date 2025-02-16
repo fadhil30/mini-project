@@ -1,18 +1,21 @@
-// express.d.ts
 import { JwtPayload } from "jsonwebtoken";
+import { User, Promotor } from "@prisma/client";
 
-// Define a custom JWT payload interface that extends the default JwtPayload
 interface CustomJwtPayload extends JwtPayload {
-  id: number; // User ID
-  name: string; // User name
-  role: string; // User role
+  id: number;
+  name: string;
+  role: string;
 }
 
-// Extend the Express namespace to include the custom user property in the Request interface
+// ✅ Gabungkan semua deklarasi Express Request dalam satu blok
 declare global {
   namespace Express {
     interface Request {
-      user?: CustomJwtPayload | null; // Optional user property
+      user?:
+        | CustomJwtPayload
+        | (User & { id: number; role: string })
+        | (Promotor & { id: number; role: string })
+        | null;
     }
   }
 }

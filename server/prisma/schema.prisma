@@ -31,6 +31,7 @@ model User {
   Wallet          Wallet?
   Review          Review[]
   Coupon          Coupon[]
+  Registration    Registration[]
 }
 
 model Promotor {
@@ -75,11 +76,52 @@ model Event {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
-  Category    Category      @relation(fields: [categoryId], references: [id])
-  Promotor    Promotor      @relation(fields: [promotorId], references: [id])
-  Review      Review[]
-  Transaction Transaction[]
-  Promotion   Promotion[]
+  Category           Category  @relation(fields: [categoryId], references: [id])
+  Promotor           Promotor  @relation(fields: [promotorId], references: [id])
+  Ticket             Ticket[]
+  Attendee            Attendee[]
+  PromotorTrans      PromotorTrans[]
+  registrations      Registration[]
+}
+
+model Attendee {
+  id      String @id @default(uuid())
+  name    String
+  email   String
+  eventId Int
+  event   Event  @relation(fields: [eventId], references: [id])
+}
+
+model PromotorTrans {
+  id        String   @id @default(uuid())
+  amount    Float
+  eventId   Int
+  registrationId Int
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+   registration Registration? @relation(fields: [registrationId], references: [id])
+}
+
+model Registration {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  PromotorTrans PromotorTrans[]
+}
+
+
+model Ticket {
+   id            Int         @id @default(autoincrement())
+  ticketCode    String      @unique
+  totalPrice    Decimal
+  transactionId Int
+  createdAt     DateTime    @default(now())
+  Transaction   Transaction @relation(fields: [transactionId], references: [id])
 }
 
 model Promotion {
@@ -116,23 +158,6 @@ model Transaction {
   Ticket      Ticket[]
 }
 
-model Ticket {
-  id            Int         @id @default(autoincrement())
-  ticketCode    String      @unique
-  totalPrice    Decimal
-  transactionId Int
-  createdAt     DateTime    @default(now())
-  Transaction   Transaction @relation(fields: [transactionId], references: [id])
-}
-
-model Wallet {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique // Ensure userId is unique to prevent multiple wallets for one user
-  balance   Decimal  @default(0) // Default balance
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-}
 
 model Point {
   id        Int      @id @default(autoincrement())
@@ -159,4 +184,13 @@ model Review {
   rating    Int
   feedback  String
   createdAt DateTime @default(now())
+}
+
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique // Ensure userId is unique to prevent multiple wallets for one user
+  balance   Decimal  @default(0) // Default balance
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
 }
