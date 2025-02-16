@@ -118,3 +118,13 @@ export async function GetDetailEvent(
       .json({ ok: false, message: "Error fetching detail event details" });
   }
 }
+
+export async function getEventTrans( req: Request, res: Response, next: NextFunction) {
+  try {
+    const events = await prisma.event.findMany({
+      include: {Attendee: true, PromotorTrans: true}
+    })
+  } catch (error) {
+    
+  }
+}

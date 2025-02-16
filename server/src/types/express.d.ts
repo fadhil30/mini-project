@@ -1,9 +1,21 @@
+import { JwtPayload } from "jsonwebtoken";
+import { User, Promotor } from "@prisma/client";
 
-import { User } from "@prisma/client";
-import { Request } from "express";
+interface CustomJwtPayload extends JwtPayload {
+  id: number;
+  name: string;
+  role: string;
+}
 
-
-
-export interface AuthRequest extends Request {
-  user?: User; // Properti user bisa ada atau tidak
+// ✅ Gabungkan semua deklarasi Express Request dalam satu blok
+declare global {
+  namespace Express {
+    interface Request {
+      user?:
+        | CustomJwtPayload
+        | (User & { id: number; role: string })
+        | (Promotor & { id: number; role: string })
+        | null;
+    }
+  }
 }

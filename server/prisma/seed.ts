@@ -1,4 +1,4 @@
-import { Promotor } from './../node_modules/.prisma/client/index.d';
+
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
@@ -181,6 +181,7 @@ async function seedEvents(
   });
   console.log("✅ Events seeded!");
 }
+
 
 async function seedUsers() {
   console.log("🌱 Seeding users...");

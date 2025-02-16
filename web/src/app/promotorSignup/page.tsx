@@ -10,7 +10,6 @@ export default function SignUpPromoterPage() {
     fullName: "",
     email: "",
     password: "",
-    role: "PROMOTER",//deafault role
   });
 
   const togglePasswordVisibility = () => {

@@ -23,11 +23,15 @@ model User {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   referrerId      Int? // Referral code dari user lain
+
   Referrer        User?           @relation("UserReferrer", fields: [referrerId], references: [id])
+ 
   ReferreredUsers User[]          @relation("UserReferrer")
   tickets         Ticket[] // Untuk customer
   redeemedPoints  RedeemedPoint[]
   ConfirmToken    ConfirmToken[]
+  Registration    Registration[]
+  Coupon          Coupon[]
 }
 
 model Promotor {
@@ -75,7 +79,41 @@ model Event {
   Category           Category  @relation(fields: [categoryId], references: [id])
   Promotor           Promotor  @relation(fields: [promotorId], references: [id])
   Ticket             Ticket[]
+  Attendee            Attendee[]
+  PromotorTrans      PromotorTrans[]
+  registrations      Registration[]
 }
+
+model Attendee {
+  id      String @id @default(uuid())
+  name    String
+  email   String
+  eventId Int
+  event   Event  @relation(fields: [eventId], references: [id])
+}
+
+model PromotorTrans {
+  id        String   @id @default(uuid())
+  amount    Float
+  eventId   Int
+  registrationId Int
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+   registration Registration? @relation(fields: [registrationId], references: [id])
+}
+
+model Registration {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  PromotorTrans PromotorTrans[]
+}
+
 
 model Ticket {
   id           Int      @id @default(autoincrement())
@@ -91,10 +129,23 @@ model Ticket {
 model RedeemedPoint {
   id         Int      @id @default(autoincrement())
   userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  pointsUsed Int
+  balance    Int
+  used       Boolean
   createdAt  DateTime @default(now())
   expiresAt  DateTime // Tanggal kedaluwarsa poin
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Coupon {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String   @unique
+  discount  Int      
+  used      Boolean
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {

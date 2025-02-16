@@ -20,7 +20,7 @@ export default function EventPage() {
         setEvents(eventData.data);
 
         const categoryResponse = await fetch(
-          "http://localhost:8000/categories"
+          "http://localhost:8000/category"
         );
         const categoryData = await categoryResponse.json();
         setCategories(categoryData.data);

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default async function Footer() {
-  const response = await fetch("http://localhost:8000/categories");
+  const response = await fetch("http://localhost:8000/category");
   const categories = await response.json();
 
   return (

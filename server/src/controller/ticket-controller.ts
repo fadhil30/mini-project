@@ -1,10 +1,10 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { PrismaClient } from "@prisma/client";
-import { AuthRequest } from "../types/express"; // Import tipe AuthRequest
+
 
 const prisma = new PrismaClient();
 
-export const buyTicket = async (req: AuthRequest, res: Response) => {
+export const buyTicket = async (req: Request, res: Response) => {
   const { eventId, discountUsed } = req.body;
 
   try {
