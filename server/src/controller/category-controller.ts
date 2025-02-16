@@ -21,7 +21,7 @@ export async function CreateCategory(
     const cloudinaryData = await cloudinary.uploader.upload(req.file.path, {
       folder: "blog/images",
     });
-    
+
     fs.unlink(req.file.path);
     const newCategory = await prisma.category.create({
       data: { name, image: cloudinaryData.secure_url },

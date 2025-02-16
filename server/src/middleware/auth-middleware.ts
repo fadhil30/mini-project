@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import type { Request, Response, NextFunction } from "express";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -12,7 +12,11 @@ interface DecodedToken extends JwtPayload {
 }
 
 // Middleware autentikasi
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const authHeader = req.headers["authorization"];
   const token = authHeader?.split(" ")[1]; // Gunakan optional chaining untuk menghindari error
 
@@ -22,7 +26,10 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as DecodedToken;
 
     // Pastikan `req.user` sesuai dengan tipe yang diterima oleh aplikasi
     req.user = {
@@ -37,12 +44,15 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 };
 
-
 export function roleGuard(allowedRole: "user" | "promotor") {
-  return async function (req: Request, res: Response, next: NextFunction): Promise<void> {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       if (!req.user) {
-       res.status(401).json({ message: "Unauthorized: No user found" });
+        res.status(401).json({ message: "Unauthorized: No user found" });
         return;
       }
 
@@ -53,15 +63,19 @@ export function roleGuard(allowedRole: "user" | "promotor") {
       if (user) {
         role = "user";
       } else {
-        const promotor = await prisma.promotor.findUnique({ where: { id: req.user.id } });
+        const promotor = await prisma.promotor.findUnique({
+          where: { id: req.user.id },
+        });
         if (promotor) {
           role = "promotor";
         }
       }
 
       if (role !== allowedRole) {
-      res.status(403).json({ message: "Forbidden: Insufficient permissions" });
-      return;
+        res
+          .status(403)
+          .json({ message: "Forbidden: Insufficient permissions" });
+        return;
       }
 
       return next();
@@ -72,4 +86,8 @@ export function roleGuard(allowedRole: "user" | "promotor") {
   };
 }
 
-
+// Export an object containing all the middleware functions
+export const authMiddleware = {
+  authenticateToken,
+  roleGuard,
+};
