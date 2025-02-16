@@ -18,7 +18,8 @@ export async function CreateTransaction(
 
     // Check if event exists
     if (!eventId) {
-      return res.status(400).json({ message: "Event ID is required" });
+      res.status(400).json({ message: "Event ID is required" });
+      return;
     }
 
     const event = await prisma.event.findUnique({ where: { id: +eventId } });
@@ -148,18 +149,15 @@ export async function CreateTransaction(
   }
 }
 
-export async function GetTransaction(
+export async function GetAllTransaction(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: +req.params.id },
-    });
+    const transaction = await prisma.transaction.findMany();
     res.status(200).json({ ok: true, data: transaction });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ ok: false, message: "Error fetching transaction" });
+    res.status(500).json({ ok: false, message: "Error creating transaction" });
   }
 }

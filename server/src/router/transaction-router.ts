@@ -1,28 +1,20 @@
-// /pages/api/transactions/transaction-router.ts
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
+import {
+  authenticateToken,
+  authMiddleware,
+  roleGuard,
+} from "../middleware/auth-middleware";
 import {
   CreateTransaction,
-  GetTransaction,
+  GetAllTransaction,
 } from "../controller/transaction-controller";
 
 const router = express.Router();
 
-// Route to create a transaction
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    await CreateTransaction(req, res, next);
-  } catch (error) {
-    next(error); // Pass the error to the next middleware
-  }
-});
-
-// Route to get a specific transaction by ID
-router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    await GetTransaction(req, res, next);
-  } catch (error) {
-    next(error); // Pass the error to the next middleware
-  }
-});
+// Rute untuk membuat transaksi
+router
+  .route("/")
+  .get(GetAllTransaction)
+  .post(authenticateToken, roleGuard("user"), CreateTransaction);
 
 export default router;

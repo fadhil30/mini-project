@@ -190,12 +190,12 @@ export const getUser = async (req: Request, res: Response) => {
         createdAt: true,
         updatedAt: true,
         // Include related data
-        tickets: {
-          include: {
-            event: true,
-          },
-        },
-        redeemedPoints: true,
+        // tickets: {
+        //   include: {
+        //     event: true,
+        //   },
+        // },
+        Point: true,
         ReferreredUsers: {
           select: {
             id: true,
