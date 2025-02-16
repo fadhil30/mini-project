@@ -6,6 +6,7 @@ import { PrismaClient, User, Promotor } from "@prisma/client";
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+
 export async function register(req: Request, res: Response) {
   const { fullName, email, password, referralCodeUsed } = req.body;
 
@@ -84,12 +85,27 @@ export async function register(req: Request, res: Response) {
         referralCode: newUser.referralCode,
       },
     });
+
+      },
+    });
+
+    // Buat wallet baru untuk pengguna
+    await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        balance: 0,
+      },
+    });
+
+    res.status(201).json({ message: "User registered", user });
+
   } catch (err: any) {
     res
       .status(500)
       .json({ message: "Error registering user", error: err.message });
   }
 }
+
 
 export const registerPromotor = async (req: Request, res: Response) => {
   const { fullName, email, password } = req.body;
@@ -151,11 +167,13 @@ export const login = async (req: Request, res: Response) => {
     });
 
     // Kirim respons dengan token dan role
+
     res.status(200).json({ message: "Logged in", token, role });
   } catch (err: any) {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }
 };
+
 
 export const getUser = async (req: Request, res: Response) => {
   try {

@@ -1,38 +1,30 @@
-import { Response, Request } from "express";
-import { PrismaClient } from "@prisma/client";
 
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const buyTicket = async (req: Request, res: Response) => {
-  const { eventId, discountUsed } = req.body;
-
+export const getAllTickets = async (req, res) => {
   try {
-    if (!req.user) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-    }
+    const tickets = await prisma.ticket.findMany();
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch tickets" });
+  }
+};
 
-    const event = await prisma.event.findUnique({ where: { id: eventId } });
-
-    if (!event) {
-    res.status(404).json({ message: "Event not found" });
-    return;
-    }
-
-    const finalPrice = event.ticketPrice - (discountUsed || 0);
-
+export const createTicket = async (req, res) => {
+  const { ticketCode, eventId, userId, pricePaid } = req.body;
+  try {
     const ticket = await prisma.ticket.create({
       data: {
+        ticketCode,
         eventId,
-        userId: req.user.id,
-        pricePaid: finalPrice,
-        discountUsed: discountUsed || 0,
+        userId,
+        pricePaid,
       },
     });
-
-    res.status(201).json({ message: "Ticket purchased", ticket });
-  } catch (err: any) {
-    res.status(500).json({ message: "Error purchasing ticket", error: err.message });
+    res.status(201).json(ticket);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create ticket" });
   }
 };
