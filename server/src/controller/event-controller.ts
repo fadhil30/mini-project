@@ -45,7 +45,7 @@ export async function CreateEvent(
         ticketAvailability: +ticketAvailability,
         host,
         eventType,
-        promotorId: req.user.id,
+        promotorId: req.user?.id,
       },
     });
 
@@ -103,12 +103,14 @@ export async function GetDetailEvent(
   }
 }
 
-export async function getEventTrans( req: Request, res: Response, next: NextFunction) {
+export async function getEventTrans(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const events = await prisma.event.findMany({
-      include: {Attendee: true, PromotorTrans: true}
-    })
-  } catch (error) {
-    
-  }
+      include: { Attendee: true, PromotorTrans: true },
+    });
+  } catch (error) {}
 }

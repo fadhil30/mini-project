@@ -19,13 +19,13 @@ export default function Header() {
     <nav className="fixed z-50 w-full bg-[#232536] px-4 py-4 md:px-12 font-montserrat text-lg font-medium">
       <div className="flex items-center justify-between h-16">
         {/* Logo */}
-        <div className="relative w-[150px] h-[40px] md:w-[200px]">
+        <div className="relative w-32 h-10 md:w-40 md:h-12">
           <Link href="/">
             <Image
               src="/eventify-logo.svg"
               alt="Company Logo"
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </Link>
         </div>
